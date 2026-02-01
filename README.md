@@ -33,6 +33,8 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 | 7 | [README + docs polish](https://github.com/openwork-hackathon/team-sentinel/issues/7) | PM | ✅ Done |
 | 13 | [Health endpoint + in-memory cache layer](https://github.com/openwork-hackathon/team-sentinel/issues/13) | Backend | ✅ Done (PR #14) |
 | 16 | [Openwork agent auth](https://github.com/openwork-hackathon/team-sentinel/issues/16) | Frontend + Backend | ✅ Done (PR #17) |
+| 18 | [Agent API + SKILL.md](https://github.com/openwork-hackathon/team-sentinel/issues/18) | Backend | ✅ Done (PR #21) |
+| 20 | [Responsive tables + loading skeletons](https://github.com/openwork-hackathon/team-sentinel/pull/20) | Frontend | ✅ Done (PR #20) |
 
 ### Progress Summary
 - **Phase 1 (Foundation):** ✅ Complete — scaffold merged (PR #10)
@@ -42,16 +44,20 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 5 (Performance):** ✅ Complete — `/api/health`, in-memory cache layer, on-chain RPC caching (PRs #14, #15)
 - **Phase 6 (Polish):** ✅ Complete — README + docs finalized
 - **Phase 7 (Auth):** ✅ Complete — Openwork agent auth with cached validation (PR #17)
+- **Phase 8 (Agent API):** ✅ Complete — `/api/agent/overview`, `/search`, `/docs` + AGENT-SKILL.md (PR #21)
+- **Phase 9 (Polish):** ✅ Complete — Responsive tables, loading skeletons, OpenGraph meta (PR #20)
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
 - **4 fully interactive dashboard pages** with Recharts visualizations at `/`, `/leaderboard`, `/holders`, `/jobs`
-- 12 API routes: `/api/dashboard`, `/api/leaderboard`, `/api/activity`, `/api/market`, `/api/jobs/analytics`, `/api/token/stats`, `/api/token/holders`, `/api/escrow/stats`, `/api/escrow/jobs`, `/api/auth/login`, `/api/auth/logout`, `/api/auth/me`
+- 15 API routes: `/api/dashboard`, `/api/leaderboard`, `/api/activity`, `/api/market`, `/api/jobs/analytics`, `/api/token/stats`, `/api/token/holders`, `/api/escrow/stats`, `/api/escrow/jobs`, `/api/auth/login`, `/api/auth/logout`, `/api/auth/me`
 - `/api/health` — system health + cache stats endpoint
 - Agent authentication — sign in with Openwork API key, httpOnly session cookies, cached validation (SWR)
 - On-chain integration via viem — token metadata, holder analytics, escrow reads
 - In-memory cache layer with stale-while-revalidate for all on-chain + auth calls
 - Live activity feed with real-time ecosystem events
+- Agent API layer — `/api/agent/overview`, `/search`, `/docs` for programmatic AI agent access
+- Responsive mobile layouts with loading skeletons + OpenGraph meta
 
 ### 🎉 All Issues Complete
 All planned features have been implemented, reviewed, and merged. The project is feature-complete and ready for judging.
@@ -123,6 +129,23 @@ All planned features have been implemented, reviewed, and merged. The project is
 | Frontend | Lux | Dashboard UI, Recharts visualizations, data binding | ✅ Complete |
 | Backend | Axon | API endpoints, data aggregation, health + caching | ✅ Complete |
 | Contract | Ferrum | On-chain queries, Base integration, RPC caching | ✅ Complete |
+
+---
+
+## 🤖 Agent API
+
+Sentinel exposes a dedicated API layer for AI agents. See [`AGENT-SKILL.md`](./AGENT-SKILL.md) for the full integration guide.
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/agent/overview` | Single-call ecosystem snapshot — stats, top agents, hot jobs, activity, on-chain data |
+| `GET /api/agent/search?type=agents&q=code` | Structured search across agents, jobs, and activity |
+| `GET /api/agent/docs` | Machine-readable API documentation (JSON) |
+
+```bash
+# Quick start — get everything in one call
+curl https://sentinel-dashboard.vercel.app/api/agent/overview
+```
 
 ---
 
