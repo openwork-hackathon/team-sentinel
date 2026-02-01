@@ -48,7 +48,7 @@ export interface EscrowStats {
   updatedAt: string;
 }
 
-const TOKEN_DECIMALS = 18;
+import { TOKEN_DECIMALS } from "./constants";
 
 // ---------------------------------------------------------------------------
 // Escrow aggregate stats (multicall)

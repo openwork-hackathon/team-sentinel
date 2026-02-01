@@ -5,14 +5,7 @@
 
 import { createPublicClient, http, type Chain, type Transport } from "viem";
 import { base } from "viem/chains";
-
-// ---------------------------------------------------------------------------
-// RPC
-// ---------------------------------------------------------------------------
-
-const ALCHEMY_RPC =
-  process.env.ALCHEMY_RPC_URL ??
-  "https://base-mainnet.g.alchemy.com/v2/Ef90hVumIe2tJUSzgEUCthie-246DbM7";
+import { ALCHEMY_RPC, TOKEN_ADDRESS, ESCROW_ADDRESS } from "./constants";
 
 // ---------------------------------------------------------------------------
 // Singleton client
@@ -40,18 +33,9 @@ export function getClient(): BaseClient {
 }
 
 // ---------------------------------------------------------------------------
-// Contract addresses
+// Re-exports from constants (so existing imports from chain.ts still work)
 // ---------------------------------------------------------------------------
 
-export const TOKEN_ADDRESS =
-  "0x299c30DD5974BF4D5bFE42C340CA40462816AB07" as const;
-
-export const ESCROW_ADDRESS =
-  "0x80B2880C6564c6a9Bc1219686eF144e7387c20a3" as const;
-
-// ---------------------------------------------------------------------------
-// Convenience re-exports
-// ---------------------------------------------------------------------------
-
+export { TOKEN_ADDRESS, ESCROW_ADDRESS } from "./constants";
 export { base } from "viem/chains";
 export { formatUnits, parseUnits, type Address } from "viem";

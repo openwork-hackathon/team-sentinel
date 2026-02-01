@@ -38,9 +38,9 @@ export interface TokenHoldersResponse {
 // Alchemy base URL (for JSON-RPC calls)
 // ---------------------------------------------------------------------------
 
-const ALCHEMY_URL =
-  process.env.ALCHEMY_RPC_URL ??
-  "https://base-mainnet.g.alchemy.com/v2/Ef90hVumIe2tJUSzgEUCthie-246DbM7";
+import { ALCHEMY_RPC } from "./constants";
+
+const ALCHEMY_URL = ALCHEMY_RPC;
 
 // ---------------------------------------------------------------------------
 // Token metadata
