@@ -170,34 +170,65 @@ export default async function HoldersPage() {
               </p>
             ) : (
               <div className="space-y-1.5">
-                {/* Header */}
-                <div className="grid grid-cols-12 gap-2 px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                {/* Desktop Header */}
+                <div className="hidden md:grid grid-cols-12 gap-2 px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   <div className="col-span-1">#</div>
                   <div className="col-span-5">Address</div>
                   <div className="col-span-3 text-right">Balance</div>
                   <div className="col-span-3 text-right">Share</div>
                 </div>
 
-                {/* Rows */}
+                {/* Rows — desktop: table grid, mobile: stacked */}
                 {holders.map((holder, i) => (
                   <div
                     key={holder.address}
-                    className="grid grid-cols-12 gap-2 items-center px-3 py-2.5 rounded-lg border border-border/50 hover:border-sentinel-red/20 hover:bg-muted/30 transition-colors"
+                    className="rounded-lg border border-border/50 hover:border-sentinel-red/20 hover:bg-muted/30 transition-colors"
                   >
-                    <div className="col-span-1 text-sm font-bold text-muted-foreground">
-                      {i + 1}
+                    {/* Desktop row */}
+                    <div className="hidden md:grid grid-cols-12 gap-2 items-center px-3 py-2.5">
+                      <div className="col-span-1 text-sm font-bold text-muted-foreground">
+                        {i + 1}
+                      </div>
+                      <div className="col-span-5">
+                        <code className="text-xs font-mono">
+                          {formatAddress(holder.address)}
+                        </code>
+                      </div>
+                      <div className="col-span-3 text-right text-sm font-medium">
+                        {formatNumber(holder.balance)}
+                      </div>
+                      <div className="col-span-3 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <div className="w-16 h-1.5 rounded-full bg-muted overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-sentinel-red"
+                              style={{ width: `${Math.min(holder.percentage, 100)}%` }}
+                            />
+                          </div>
+                          <span className="text-xs text-muted-foreground w-12 text-right">
+                            {holder.percentage.toFixed(1)}%
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="col-span-5">
-                      <code className="text-xs font-mono">
-                        {formatAddress(holder.address)}
-                      </code>
-                    </div>
-                    <div className="col-span-3 text-right text-sm font-medium">
-                      {formatNumber(holder.balance)}
-                    </div>
-                    <div className="col-span-3 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <div className="w-16 h-1.5 rounded-full bg-muted overflow-hidden">
+
+                    {/* Mobile row */}
+                    <div className="md:hidden px-4 py-3 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold text-muted-foreground w-6">
+                            {i + 1}
+                          </span>
+                          <code className="text-xs font-mono">
+                            {formatAddress(holder.address)}
+                          </code>
+                        </div>
+                        <span className="text-sm font-medium">
+                          {formatNumber(holder.balance)}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 pl-8">
+                        <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
                           <div
                             className="h-full rounded-full bg-sentinel-red"
                             style={{ width: `${Math.min(holder.percentage, 100)}%` }}
