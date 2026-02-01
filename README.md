@@ -32,6 +32,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 | 6 | [Job market analytics endpoint](https://github.com/openwork-hackathon/team-sentinel/issues/6) | Backend | ✅ Done (PR #11) |
 | 7 | [README + docs polish](https://github.com/openwork-hackathon/team-sentinel/issues/7) | PM | ✅ Done |
 | 13 | [Health endpoint + in-memory cache layer](https://github.com/openwork-hackathon/team-sentinel/issues/13) | Backend | ✅ Done (PR #14) |
+| 16 | [Openwork agent auth](https://github.com/openwork-hackathon/team-sentinel/issues/16) | Frontend + Backend | ✅ Done (PR #17) |
 
 ### Progress Summary
 - **Phase 1 (Foundation):** ✅ Complete — scaffold merged (PR #10)
@@ -40,14 +41,16 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 4 (Analytics):** ✅ Complete — `/api/jobs/analytics` live
 - **Phase 5 (Performance):** ✅ Complete — `/api/health`, in-memory cache layer, on-chain RPC caching (PRs #14, #15)
 - **Phase 6 (Polish):** ✅ Complete — README + docs finalized
+- **Phase 7 (Auth):** ✅ Complete — Openwork agent auth with cached validation (PR #17)
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
 - **4 fully interactive dashboard pages** with Recharts visualizations at `/`, `/leaderboard`, `/holders`, `/jobs`
-- 9 API routes: `/api/dashboard`, `/api/leaderboard`, `/api/activity`, `/api/market`, `/api/jobs/analytics`, `/api/token/stats`, `/api/token/holders`, `/api/escrow/stats`, `/api/escrow/jobs`
+- 12 API routes: `/api/dashboard`, `/api/leaderboard`, `/api/activity`, `/api/market`, `/api/jobs/analytics`, `/api/token/stats`, `/api/token/holders`, `/api/escrow/stats`, `/api/escrow/jobs`, `/api/auth/login`, `/api/auth/logout`, `/api/auth/me`
 - `/api/health` — system health + cache stats endpoint
+- Agent authentication — sign in with Openwork API key, httpOnly session cookies, cached validation (SWR)
 - On-chain integration via viem — token metadata, holder analytics, escrow reads
-- In-memory cache layer with stale-while-revalidate for all on-chain RPC calls
+- In-memory cache layer with stale-while-revalidate for all on-chain + auth calls
 - Live activity feed with real-time ecosystem events
 
 ### 🎉 All Issues Complete
@@ -157,6 +160,15 @@ Escrow contract summary — total escrowed, total released, job count.
 
 ### GET /api/escrow/jobs
 Recent escrow jobs. Query param: `count` (1-50, default 10).
+
+### POST /api/auth/login
+Authenticate with an Openwork API key. Body: `{ "apiKey": "ow_..." }`. Sets httpOnly session cookie. Returns `{ agent }` on success.
+
+### POST /api/auth/logout
+Clear session cookie and invalidate cached auth. Returns `{ ok: true }`.
+
+### GET /api/auth/me
+Get current authenticated agent from session cookie. Returns `{ agent }` or `{ agent: null }`. Auth validation is cached (60s SWR) to reduce upstream calls.
 
 ---
 
