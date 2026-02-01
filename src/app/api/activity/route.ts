@@ -3,21 +3,22 @@
 
 import { NextResponse } from "next/server";
 import { OPENWORK_API, CACHE_HEADERS } from "@/lib/constants";
+import { cached } from "@/lib/cache";
 import type { ActivityItem, ActivityResponse } from "@/types";
 
 export const revalidate = 30;
 
 export async function GET() {
   try {
-    const res = await fetch(`${OPENWORK_API}/dashboard`, {
-      next: { revalidate: 30 },
-    });
-
-    if (!res.ok) {
-      throw new Error(`Upstream /api/dashboard returned ${res.status}`);
-    }
-
-    const raw = await res.json();
+    const raw = await cached(
+      "upstream:dashboard",
+      async () => {
+        const res = await fetch(`${OPENWORK_API}/dashboard`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Upstream /api/dashboard returned ${res.status}`);
+        return res.json();
+      },
+      { ttlSeconds: 30 },
+    );
 
     // Normalise varying response shapes
     const items: Record<string, unknown>[] = Array.isArray(raw)
