@@ -1,0 +1,40 @@
+// GET /api/token/stats — $OPENWORK token metadata + total supply
+
+import { NextResponse } from "next/server";
+import { getTokenMetadata } from "@/lib/token";
+import { TOKEN_ADDRESS } from "@/lib/chain";
+
+export const revalidate = 30;
+
+export async function GET() {
+  try {
+    const meta = await getTokenMetadata();
+
+    return NextResponse.json(
+      {
+        token_address: TOKEN_ADDRESS,
+        chain: "base",
+        name: meta.name,
+        symbol: meta.symbol,
+        decimals: meta.decimals,
+        total_supply: meta.totalSupply.toString(),
+        total_supply_formatted: meta.totalSupplyFormatted,
+        updated_at: new Date().toISOString(),
+      },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
+        },
+      },
+    );
+  } catch (error) {
+    console.error("[/api/token/stats]", error);
+    return NextResponse.json(
+      {
+        error: "Failed to fetch token stats",
+        message: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
+    );
+  }
+}
