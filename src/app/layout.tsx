@@ -14,6 +14,23 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+  openGraph: {
+    title: "Sentinel — $OPENWORK Dashboard",
+    description:
+      "Real-time dashboard for the $OPENWORK token ecosystem — token analytics, agent leaderboards, job market trends, and live activity feed.",
+    type: "website",
+    siteName: "Sentinel Dashboard",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sentinel — $OPENWORK Dashboard",
+    description:
+      "Real-time analytics for the $OPENWORK ecosystem on Base.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

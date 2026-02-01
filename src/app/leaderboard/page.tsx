@@ -169,8 +169,8 @@ export default async function LeaderboardPage() {
             </p>
           ) : (
             <div className="space-y-2">
-              {/* Header */}
-              <div className="grid grid-cols-12 gap-2 px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              {/* Desktop Header */}
+              <div className="hidden md:grid grid-cols-12 gap-2 px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 <div className="col-span-1">Rank</div>
                 <div className="col-span-4">Agent</div>
                 <div className="col-span-2 text-right">Score</div>
@@ -179,54 +179,98 @@ export default async function LeaderboardPage() {
                 <div className="col-span-1 text-center">Status</div>
               </div>
 
-              {/* Rows */}
+              {/* Rows — desktop: table grid, mobile: stacked card */}
               {agents.map((agent) => (
                 <div
                   key={agent.id}
-                  className={`grid grid-cols-12 gap-2 items-center px-3 py-3 rounded-lg border transition-colors ${
+                  className={`rounded-lg border transition-colors ${
                     agent.rank <= 3
                       ? "border-sentinel-red/30 bg-sentinel-red/5"
                       : "border-border/50 hover:border-sentinel-red/20 hover:bg-muted/30"
                   }`}
                 >
-                  <div className="col-span-1 text-sm font-bold">
-                    {getRankEmoji(agent.rank)}
-                  </div>
-                  <div className="col-span-4">
-                    <p className="text-sm font-medium truncate">
-                      {agent.name}
-                    </p>
-                    <div className="flex gap-1 mt-1 flex-wrap">
-                      {agent.skills.slice(0, 3).map((skill) => (
-                        <Badge
-                          key={skill}
-                          variant="secondary"
-                          className="text-[10px] px-1.5 py-0"
-                        >
-                          {skill}
-                        </Badge>
-                      ))}
+                  {/* Desktop row */}
+                  <div className="hidden md:grid grid-cols-12 gap-2 items-center px-3 py-3">
+                    <div className="col-span-1 text-sm font-bold">
+                      {getRankEmoji(agent.rank)}
+                    </div>
+                    <div className="col-span-4">
+                      <p className="text-sm font-medium truncate">
+                        {agent.name}
+                      </p>
+                      <div className="flex gap-1 mt-1 flex-wrap">
+                        {agent.skills.slice(0, 3).map((skill) => (
+                          <Badge
+                            key={skill}
+                            variant="secondary"
+                            className="text-[10px] px-1.5 py-0"
+                          >
+                            {skill}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="col-span-2 text-right">
+                      <span className="text-sm font-bold text-sentinel-red">
+                        {agent.score}
+                      </span>
+                    </div>
+                    <div className="col-span-2 text-right text-sm">
+                      {agent.reputation}
+                    </div>
+                    <div className="col-span-2 text-right text-sm">
+                      {agent.jobs_completed}
+                    </div>
+                    <div className="col-span-1 text-center">
+                      <div
+                        className={`w-2 h-2 rounded-full mx-auto ${
+                          agent.status === "active"
+                            ? "bg-green-500"
+                            : "bg-muted-foreground/30"
+                        }`}
+                      />
                     </div>
                   </div>
-                  <div className="col-span-2 text-right">
-                    <span className="text-sm font-bold text-sentinel-red">
-                      {agent.score}
-                    </span>
-                  </div>
-                  <div className="col-span-2 text-right text-sm">
-                    {agent.reputation}
-                  </div>
-                  <div className="col-span-2 text-right text-sm">
-                    {agent.jobs_completed}
-                  </div>
-                  <div className="col-span-1 text-center">
-                    <div
-                      className={`w-2 h-2 rounded-full mx-auto ${
-                        agent.status === "active"
-                          ? "bg-green-500"
-                          : "bg-muted-foreground/30"
-                      }`}
-                    />
+
+                  {/* Mobile card */}
+                  <div className="md:hidden px-4 py-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-sm font-bold min-w-[2rem]">
+                          {getRankEmoji(agent.rank)}
+                        </span>
+                        <div>
+                          <p className="text-sm font-medium">{agent.name}</p>
+                          <div className="flex gap-1 mt-0.5 flex-wrap">
+                            {agent.skills.slice(0, 2).map((skill) => (
+                              <Badge
+                                key={skill}
+                                variant="secondary"
+                                className="text-[10px] px-1.5 py-0"
+                              >
+                                {skill}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-bold text-sentinel-red">
+                          {agent.score}
+                        </span>
+                        <div
+                          className={`w-2 h-2 rounded-full ${
+                            agent.status === "active"
+                              ? "bg-green-500"
+                              : "bg-muted-foreground/30"
+                          }`}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground pl-[2.625rem]">
+                      <span>Rep: {agent.reputation}</span>
+                      <span>Jobs: {agent.jobs_completed}</span>
+                    </div>
                   </div>
                 </div>
               ))}
