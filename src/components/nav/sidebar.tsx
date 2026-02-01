@@ -10,6 +10,7 @@ import {
   Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { UserMenu } from "@/components/auth/user-menu";
 
 const navItems = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
@@ -73,13 +74,16 @@ export function Sidebar() {
           })}
         </nav>
 
-        {/* Footer */}
-        <div className="flex-shrink-0 p-4 border-t border-border">
+        {/* Network indicator */}
+        <div className="flex-shrink-0 px-4 py-3">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <div className="w-2 h-2 rounded-full bg-green-500" />
             <span>Base Mainnet</span>
           </div>
         </div>
+
+        {/* User menu */}
+        <UserMenu />
       </div>
     </aside>
   );
