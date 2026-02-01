@@ -9,6 +9,7 @@ import {
   Briefcase,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { UserMenuMobile } from "@/components/auth/user-menu";
 
 const navItems = [
   { name: "Home", href: "/", icon: LayoutDashboard },
@@ -43,6 +44,7 @@ export function MobileNav() {
             </Link>
           );
         })}
+        <UserMenuMobile />
       </div>
     </nav>
   );
