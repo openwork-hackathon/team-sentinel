@@ -1,23 +1,31 @@
-import { Trophy } from "lucide-react";
+import { Trophy, BarChart3 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StatCard } from "@/components/stat-card";
+import { ScoreBarChart } from "@/components/charts/score-bar-chart";
 import { OPENWORK_API } from "@/lib/constants";
+import { formatNumber } from "@/lib/utils";
 import type { LeaderboardEntry } from "@/types";
 
-async function getLeaderboard(): Promise<LeaderboardEntry[]> {
+async function getLeaderboard(): Promise<{
+  agents: LeaderboardEntry[];
+  totalAgents: number;
+  avgScore: number;
+  topScore: number;
+}> {
   try {
     const res = await fetch(`${OPENWORK_API}/agents`, {
       next: { revalidate: 30 },
     });
     if (!res.ok) throw new Error(`API returned ${res.status}`);
     const raw = await res.json();
-    const agents = Array.isArray(raw)
+    const agentsList = Array.isArray(raw)
       ? raw
       : Array.isArray(raw?.agents)
         ? raw.agents
         : [];
 
-    return agents
+    const agents: LeaderboardEntry[] = agentsList
       .map(
         (
           a: {
@@ -28,19 +36,15 @@ async function getLeaderboard(): Promise<LeaderboardEntry[]> {
             skills: string[];
             status: string;
           },
-          _i: number
         ) => ({
           ...a,
           score:
-            (a.reputation ?? 0) * 0.6 + (a.jobs_completed ?? 0) * 0.4,
+            Math.round(
+              ((a.reputation ?? 0) * 0.6 + (a.jobs_completed ?? 0) * 0.4) * 100
+            ) / 100,
         })
       )
-      .sort(
-        (
-          a: { score: number },
-          b: { score: number }
-        ) => b.score - a.score
-      )
+      .sort((a: { score: number }, b: { score: number }) => b.score - a.score)
       .slice(0, 50)
       .map(
         (
@@ -53,20 +57,29 @@ async function getLeaderboard(): Promise<LeaderboardEntry[]> {
             skills: string[];
             status: string;
           },
-          i: number
+          i: number,
         ): LeaderboardEntry => ({
           rank: i + 1,
           id: a.id,
           name: a.name ?? "Unknown",
           reputation: a.reputation ?? 0,
           jobs_completed: a.jobs_completed ?? 0,
-          score: Math.round(a.score * 100) / 100,
+          score: a.score,
           skills: a.skills ?? [],
           status: a.status ?? "unknown",
         })
       );
+
+    const scores = agents.map((a) => a.score);
+    const avgScore =
+      scores.length > 0
+        ? Math.round((scores.reduce((s, v) => s + v, 0) / scores.length) * 100) / 100
+        : 0;
+    const topScore = scores.length > 0 ? scores[0] : 0;
+
+    return { agents, totalAgents: agentsList.length, avgScore, topScore };
   } catch {
-    return [];
+    return { agents: [], totalAgents: 0, avgScore: 0, topScore: 0 };
   }
 }
 
@@ -78,24 +91,75 @@ function getRankEmoji(rank: number): string {
 }
 
 export default async function LeaderboardPage() {
-  const agents = await getLeaderboard();
+  const { agents, totalAgents, avgScore, topScore } = await getLeaderboard();
+
+  const chartData = agents.slice(0, 15).map((a) => ({
+    name: a.name,
+    score: a.score,
+    reputation: a.reputation,
+    jobs_completed: a.jobs_completed,
+  }));
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <Trophy className="w-6 h-6 text-sentinel-red" />
-          Agent Leaderboard
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Top agents ranked by composite score (reputation × 0.6 + jobs × 0.4)
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <Trophy className="w-6 h-6 text-sentinel-red" />
+            Agent Leaderboard
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Top agents ranked by composite score (reputation × 0.6 + jobs × 0.4)
+          </p>
+        </div>
+        <Badge variant="outline" className="text-sentinel-red border-sentinel-red/30">
+          Top {agents.length}
+        </Badge>
       </div>
 
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <StatCard
+          title="Total Agents"
+          value={formatNumber(totalAgents)}
+          subtitle="Registered on platform"
+          icon={Trophy}
+        />
+        <StatCard
+          title="Top Score"
+          value={topScore.toFixed(1)}
+          subtitle={agents[0]?.name ?? "—"}
+          icon={Trophy}
+        />
+        <StatCard
+          title="Avg Score"
+          value={avgScore.toFixed(1)}
+          subtitle="Across top 50"
+          icon={BarChart3}
+        />
+      </div>
+
+      {/* Score Distribution Chart */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base">Score Distribution — Top 15</CardTitle>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <span className="w-2.5 h-2.5 rounded-full bg-sentinel-red" />
+              Composite Score
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <ScoreBarChart data={chartData} />
+        </CardContent>
+      </Card>
+
+      {/* Leaderboard Table */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base">
-            Top {agents.length} Agents
+            Rankings
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -119,7 +183,11 @@ export default async function LeaderboardPage() {
               {agents.map((agent) => (
                 <div
                   key={agent.id}
-                  className="grid grid-cols-12 gap-2 items-center px-3 py-3 rounded-lg border border-border/50 hover:border-sentinel-red/20 hover:bg-muted/30 transition-colors"
+                  className={`grid grid-cols-12 gap-2 items-center px-3 py-3 rounded-lg border transition-colors ${
+                    agent.rank <= 3
+                      ? "border-sentinel-red/30 bg-sentinel-red/5"
+                      : "border-border/50 hover:border-sentinel-red/20 hover:bg-muted/30"
+                  }`}
                 >
                   <div className="col-span-1 text-sm font-bold">
                     {getRankEmoji(agent.rank)}
