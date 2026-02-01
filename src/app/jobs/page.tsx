@@ -1,64 +1,152 @@
-import { Briefcase, TrendingUp, Clock, CheckCircle } from "lucide-react";
+import { Briefcase, TrendingUp, Clock, CheckCircle, BarChart3 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StatCard } from "@/components/stat-card";
+import { RewardBarChart } from "@/components/charts/reward-bar-chart";
+import { SkillsBarChart } from "@/components/charts/skills-bar-chart";
+import { TrendAreaChart } from "@/components/charts/trend-area-chart";
 import { OPENWORK_API } from "@/lib/constants";
 import { formatNumber } from "@/lib/utils";
 
-interface JobStats {
+interface UpstreamJob {
+  id: string;
+  title?: string;
+  status?: string;
+  reward?: number;
+  skills_required?: string[];
+  created_at?: string;
+}
+
+interface JobAnalytics {
   open: number;
   completed: number;
   total: number;
   avgReward: number;
+  medianReward: number;
+  rewardDistribution: { range: string; count: number }[];
+  topSkills: { skill: string; count: number }[];
+  dailyTrends: { date: string; created: number; completed: number }[];
 }
 
-async function getJobStats(): Promise<JobStats> {
+async function getJobAnalytics(): Promise<JobAnalytics> {
   try {
     const res = await fetch(`${OPENWORK_API}/jobs`, {
       next: { revalidate: 30 },
     });
     if (!res.ok) throw new Error(`API returned ${res.status}`);
     const raw = await res.json();
-    const jobs = Array.isArray(raw)
+    const jobs: UpstreamJob[] = Array.isArray(raw)
       ? raw
       : Array.isArray(raw?.jobs)
         ? raw.jobs
         : [];
 
     const open = jobs.filter(
-      (j: { status: string }) =>
-        j.status === "open" || j.status === "available"
+      (j) => j.status === "open" || j.status === "available"
     ).length;
-    const completed = jobs.filter(
-      (j: { status: string }) => j.status === "completed"
-    ).length;
+    const completed = jobs.filter((j) => j.status === "completed").length;
+
     const rewards = jobs
-      .map((j: { reward?: number }) => j.reward ?? 0)
-      .filter((r: number) => r > 0);
+      .map((j) => j.reward ?? 0)
+      .filter((r) => r > 0)
+      .sort((a, b) => a - b);
+
     const avgReward =
       rewards.length > 0
-        ? rewards.reduce((s: number, r: number) => s + r, 0) / rewards.length
+        ? rewards.reduce((s, r) => s + r, 0) / rewards.length
         : 0;
 
-    return { open, completed, total: jobs.length, avgReward };
+    const medianReward =
+      rewards.length > 0
+        ? rewards.length % 2 === 0
+          ? (rewards[rewards.length / 2 - 1] + rewards[rewards.length / 2]) / 2
+          : rewards[Math.floor(rewards.length / 2)]
+        : 0;
+
+    // Reward distribution buckets
+    const buckets: [string, number, number][] = [
+      ["0–100", 0, 100],
+      ["100–500", 100, 500],
+      ["500–1K", 500, 1000],
+      ["1K–5K", 1000, 5000],
+      ["5K–10K", 5000, 10000],
+      ["10K+", 10000, Infinity],
+    ];
+    const rewardDistribution = buckets.map(([range, min, max]) => ({
+      range,
+      count: rewards.filter((r) => r >= min && r < max).length,
+    }));
+
+    // Top skills
+    const skillCounts: Record<string, number> = {};
+    for (const j of jobs) {
+      for (const s of j.skills_required ?? []) {
+        skillCounts[s] = (skillCounts[s] ?? 0) + 1;
+      }
+    }
+    const topSkills = Object.entries(skillCounts)
+      .map(([skill, count]) => ({ skill, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+
+    // Daily trends (last 30 days)
+    const dailyMap = new Map<string, { created: number; completed: number }>();
+    for (const j of jobs) {
+      if (!j.created_at) continue;
+      const dateKey = j.created_at.slice(0, 10);
+      const entry = dailyMap.get(dateKey) ?? { created: 0, completed: 0 };
+      entry.created += 1;
+      if (j.status === "completed") entry.completed += 1;
+      dailyMap.set(dateKey, entry);
+    }
+    const dailyTrends = Array.from(dailyMap.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-30)
+      .map(([date, v]) => ({ date, created: v.created, completed: v.completed }));
+
+    return {
+      open,
+      completed,
+      total: jobs.length,
+      avgReward,
+      medianReward,
+      rewardDistribution,
+      topSkills,
+      dailyTrends,
+    };
   } catch {
-    return { open: 0, completed: 0, total: 0, avgReward: 0 };
+    return {
+      open: 0,
+      completed: 0,
+      total: 0,
+      avgReward: 0,
+      medianReward: 0,
+      rewardDistribution: [],
+      topSkills: [],
+      dailyTrends: [],
+    };
   }
 }
 
 export default async function JobsPage() {
-  const stats = await getJobStats();
+  const stats = await getJobAnalytics();
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <Briefcase className="w-6 h-6 text-sentinel-red" />
-          Job Market
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Job market trends and reward analytics
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <Briefcase className="w-6 h-6 text-sentinel-red" />
+            Job Market
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Job market trends, reward analytics, and skill demand
+          </p>
+        </div>
+        <Badge variant="outline" className="text-sentinel-red border-sentinel-red/30">
+          <BarChart3 className="w-3 h-3 mr-1" />
+          Live Data
+        </Badge>
       </div>
 
       {/* Stats */}
@@ -66,64 +154,68 @@ export default async function JobsPage() {
         <StatCard
           title="Open Jobs"
           value={formatNumber(stats.open)}
+          subtitle="Available for agents"
           icon={Clock}
         />
         <StatCard
           title="Completed"
           value={formatNumber(stats.completed)}
+          subtitle="Successfully delivered"
           icon={CheckCircle}
-        />
-        <StatCard
-          title="Total Jobs"
-          value={formatNumber(stats.total)}
-          icon={Briefcase}
         />
         <StatCard
           title="Avg Reward"
           value={`${formatNumber(stats.avgReward)} $OW`}
+          subtitle={`Median: ${formatNumber(stats.medianReward)}`}
           icon={TrendingUp}
+        />
+        <StatCard
+          title="Total Jobs"
+          value={formatNumber(stats.total)}
+          subtitle="All time"
+          icon={Briefcase}
         />
       </div>
 
-      {/* Charts placeholder */}
+      {/* Job Trend Chart */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base">Job Activity (30d)</CardTitle>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-sentinel-red" />
+                Created
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                Completed
+              </span>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <TrendAreaChart data={stats.dailyTrends} />
+        </CardContent>
+      </Card>
+
+      {/* Reward Distribution + Top Skills */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base">Reward Distribution</CardTitle>
-              <Badge variant="outline">Recharts</Badge>
-            </div>
+            <CardTitle className="text-base">Reward Distribution</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-              <TrendingUp className="w-12 h-12 mb-4 opacity-30" />
-              <p className="text-sm">
-                Chart component coming in Issue #3
-              </p>
-              <p className="text-xs mt-1">
-                Reward distribution histogram will render here.
-              </p>
-            </div>
+            <RewardBarChart data={stats.rewardDistribution} />
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base">Top Skills</CardTitle>
-              <Badge variant="outline">Recharts</Badge>
-            </div>
+            <CardTitle className="text-base">Top Skills in Demand</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-              <Briefcase className="w-12 h-12 mb-4 opacity-30" />
-              <p className="text-sm">
-                Chart component coming in Issue #3
-              </p>
-              <p className="text-xs mt-1">
-                Most requested skills bar chart will render here.
-              </p>
-            </div>
+            <SkillsBarChart data={stats.topSkills} />
           </CardContent>
         </Card>
       </div>

@@ -8,23 +8,28 @@ import {
 } from "lucide-react";
 import { StatCard } from "@/components/stat-card";
 import { ActivityFeed } from "@/components/activity-feed";
+import { TrendAreaChart } from "@/components/charts/trend-area-chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { OPENWORK_API } from "@/lib/constants";
 import { formatNumber } from "@/lib/utils";
 import type { ActivityItem, DashboardSummary } from "@/types";
 
-async function getDashboard(): Promise<{
+interface DashboardData {
   summary: DashboardSummary;
   activity: ActivityItem[];
-}> {
-  try {
-    const res = await fetch(`${OPENWORK_API}/dashboard`, {
-      next: { revalidate: 30 },
-    });
-    if (!res.ok) throw new Error(`Dashboard API returned ${res.status}`);
-    const data = await res.json();
+  dailyTrends: { date: string; created: number; completed: number }[];
+}
 
+async function getDashboard(): Promise<DashboardData> {
+  try {
+    const [dashRes, jobsRes] = await Promise.all([
+      fetch(`${OPENWORK_API}/dashboard`, { next: { revalidate: 30 } }),
+      fetch(`${OPENWORK_API}/jobs`, { next: { revalidate: 30 } }),
+    ]);
+
+    // Dashboard data
+    const data = dashRes.ok ? await dashRes.json() : {};
     const stats = data.stats ?? data;
     const activity: ActivityItem[] = (data.activity ?? []).map(
       (a: Record<string, unknown>, i: number) => ({
@@ -45,6 +50,24 @@ async function getDashboard(): Promise<{
       })
     );
 
+    // Job trends for mini chart
+    const jobsRaw = jobsRes.ok ? await jobsRes.json() : [];
+    const jobs = Array.isArray(jobsRaw) ? jobsRaw : jobsRaw?.jobs ?? [];
+
+    const dailyMap = new Map<string, { created: number; completed: number }>();
+    for (const j of jobs) {
+      if (!j.created_at) continue;
+      const dateKey = j.created_at.slice(0, 10);
+      const entry = dailyMap.get(dateKey) ?? { created: 0, completed: 0 };
+      entry.created += 1;
+      if (j.status === "completed") entry.completed += 1;
+      dailyMap.set(dateKey, entry);
+    }
+    const dailyTrends = Array.from(dailyMap.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-14)
+      .map(([date, v]) => ({ date, created: v.created, completed: v.completed }));
+
     return {
       summary: {
         total_agents: stats.totalAgents ?? stats.total_agents ?? 0,
@@ -58,6 +81,7 @@ async function getDashboard(): Promise<{
         holder_count: stats.holder_count ?? 0,
       },
       activity: activity.slice(0, 20),
+      dailyTrends,
     };
   } catch {
     return {
@@ -71,12 +95,13 @@ async function getDashboard(): Promise<{
         holder_count: 0,
       },
       activity: [],
+      dailyTrends: [],
     };
   }
 }
 
 export default async function DashboardPage() {
-  const { summary, activity } = await getDashboard();
+  const { summary, activity, dailyTrends } = await getDashboard();
 
   return (
     <div className="space-y-6">
@@ -132,6 +157,28 @@ export default async function DashboardPage() {
           icon={Wallet}
         />
       </div>
+
+      {/* Trend Chart */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base">Job Activity (14d)</CardTitle>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-sentinel-red" />
+                Created
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                Completed
+              </span>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <TrendAreaChart data={dailyTrends} />
+        </CardContent>
+      </Card>
 
       {/* Activity Feed + Quick Links */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
