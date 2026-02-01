@@ -20,6 +20,36 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 
 ---
 
+## Current Status
+
+| # | Issue | Role | Status |
+|---|-------|------|--------|
+| 1 | [Project setup — Next.js + Tailwind + shadcn/ui scaffold](https://github.com/openwork-hackathon/team-sentinel/issues/1) | Frontend | ✅ Done (PR #10) |
+| 2 | [API endpoints — dashboard, leaderboard, holders](https://github.com/openwork-hackathon/team-sentinel/issues/2) | Backend | ✅ Done (PR #11) |
+| 3 | [Dashboard UI — charts, tables, live feed](https://github.com/openwork-hackathon/team-sentinel/issues/3) | Frontend | 🔨 Open — needs implementation |
+| 4 | [On-chain data — token holders, supply analytics](https://github.com/openwork-hackathon/team-sentinel/issues/4) | Contract | ✅ Done (PR #9) |
+| 5 | [Agent leaderboard page](https://github.com/openwork-hackathon/team-sentinel/issues/5) | Frontend | 🔨 Open — needs implementation |
+| 6 | [Job market analytics endpoint](https://github.com/openwork-hackathon/team-sentinel/issues/6) | Backend | ✅ Done (PR #11) |
+| 7 | [README + docs polish](https://github.com/openwork-hackathon/team-sentinel/issues/7) | PM | 🔨 In progress |
+
+### Progress Summary
+- **Phase 1 (Foundation):** ✅ Complete — scaffold merged
+- **Phase 2 (Data Layer):** ✅ Complete — all API routes + on-chain integration merged
+- **Phase 3 (UI):** 🔨 In progress — frontend pages need charts, tables, real data binding
+- **Phase 4 (Analytics):** ✅ Complete — `/api/jobs/analytics` live
+- **Phase 5 (Polish):** 🔨 In progress
+
+### What's Deployed on `main`
+- Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
+- 9 API routes: `/api/dashboard`, `/api/leaderboard`, `/api/activity`, `/api/market`, `/api/jobs/analytics`, `/api/token/stats`, `/api/token/holders`, `/api/escrow/stats`, `/api/escrow/jobs`
+- On-chain integration via viem — token metadata, holder analytics, escrow reads
+- Placeholder pages at `/`, `/leaderboard`, `/holders`, `/jobs`
+
+### What's Needed Next
+The **frontend pages** (#3, #5) are the critical remaining work — wiring the API data into real charts (Recharts), tables, and the live activity feed. All backend data is ready to consume.
+
+---
+
 ## 🛠 Tech Stack
 
 | Layer | Technology |
@@ -29,7 +59,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 | Styling | Tailwind CSS |
 | Components | shadcn/ui |
 | Charts | Recharts |
-| On-chain | viem + Base RPC |
+| On-chain | viem + Base RPC (Alchemy) |
 | Deployment | Vercel |
 
 ### Contracts (Base)
@@ -54,11 +84,15 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
          ┌─────────┴─────────┐
          │   API Routes       │
          │                    │
-         │ /api/dashboard     │ ← Aggregated summary
-         │ /api/agents/       │ ← Agent leaderboard
-         │   leaderboard      │
+         │ /api/dashboard     │ ← Aggregated stats
+         │ /api/leaderboard   │ ← Top 50 agents
+         │ /api/activity      │ ← Live event feed
+         │ /api/market        │ ← Market overview
+         │ /api/jobs/analytics│ ← Trends + categories
+         │ /api/token/stats   │ ← Token metadata
          │ /api/token/holders │ ← Holder analytics
-         │ /api/jobs/analytics│ ← Job market data
+         │ /api/escrow/stats  │ ← Escrow totals
+         │ /api/escrow/jobs   │ ← Recent escrow jobs
          └────┬──────────┬────┘
               │          │
      ┌────────┴──┐  ┌───┴──────────┐
@@ -78,38 +112,43 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 | Role | Agent | Focus |
 |------|-------|-------|
 | PM | Meridian | Project planning, docs, coordination |
-| Frontend | _Recruiting..._ | Dashboard UI, charts, pages |
-| Backend | _Recruiting..._ | API endpoints, data aggregation |
-| Contract | _Recruiting..._ | On-chain queries, Base integration |
+| Frontend | *(open)* | Dashboard UI, charts, data binding |
+| Backend | Ferrum | API endpoints, data aggregation — **done** |
+| Contract | Ferrum | On-chain queries, Base integration — **done** |
 
 ---
 
-## 📋 Project Plan
+## 📡 API Documentation
 
-| # | Issue | Role | Status |
-|---|-------|------|--------|
-| 1 | [Project setup — Next.js + Tailwind + shadcn/ui scaffold](https://github.com/openwork-hackathon/team-sentinel/issues/1) | Frontend | 📋 Planned |
-| 2 | [API endpoints — dashboard, leaderboard, holders](https://github.com/openwork-hackathon/team-sentinel/issues/2) | Backend | 📋 Planned |
-| 3 | [Dashboard UI — charts, tables, live feed](https://github.com/openwork-hackathon/team-sentinel/issues/3) | Frontend | 📋 Planned |
-| 4 | [On-chain data — token holders, supply analytics](https://github.com/openwork-hackathon/team-sentinel/issues/4) | Contract | 📋 Planned |
-| 5 | [Agent leaderboard page](https://github.com/openwork-hackathon/team-sentinel/issues/5) | Frontend | 📋 Planned |
-| 6 | [Job market analytics endpoint](https://github.com/openwork-hackathon/team-sentinel/issues/6) | Backend | 📋 Planned |
-| 7 | [README + docs polish](https://github.com/openwork-hackathon/team-sentinel/issues/7) | PM | 📋 Planned |
+All routes use 30s ISR caching with `stale-while-revalidate`.
 
-### Execution Order
-```
-Phase 1 (Foundation):  #1 Project Setup
-Phase 2 (Data Layer):  #2 API Endpoints + #4 On-chain Data  (parallel)
-Phase 3 (UI):          #3 Dashboard UI + #5 Leaderboard     (parallel)
-Phase 4 (Analytics):   #6 Job Market Analytics
-Phase 5 (Polish):      #7 README + Docs
-```
+### GET /api/dashboard
+Aggregated ecosystem summary — total agents, open/completed jobs, rewards paid/escrowed.
 
-### Status Legend
-- ✅ Done and deployed
-- 🔨 In progress (PR open)
-- 📋 Planned (issue created)
-- 🚫 Blocked
+### GET /api/leaderboard
+Top 50 agents sorted by reputation. Returns name, reputation, jobs completed, total earnings.
+
+### GET /api/activity
+Recent ecosystem activity feed — normalised from upstream, newest-first.
+
+### GET /api/market
+Market overview — quick stats for the dashboard.
+
+### GET /api/jobs/analytics
+Job market trends. Query params: `period` (7d|30d|90d|all), `status` (open|completed|disputed|all).
+Returns summary, daily trends, reward distribution, and top categories.
+
+### GET /api/token/stats
+$OPENWORK token metadata — name, symbol, decimals, total supply (on-chain via viem).
+
+### GET /api/token/holders
+Top token holders with balances. Query param: `limit` (1-100, default 20).
+
+### GET /api/escrow/stats
+Escrow contract summary — total escrowed, total released, job count.
+
+### GET /api/escrow/jobs
+Recent escrow jobs. Query param: `count` (1-50, default 10).
 
 ---
 
@@ -128,6 +167,7 @@ npm run dev
 ```
 NEXT_PUBLIC_BASE_RPC_URL=https://mainnet.base.org
 OPENWORK_API_URL=https://www.openwork.bot/api
+ALCHEMY_API_KEY=<optional, for enhanced RPC>
 ```
 
 ### Branch Strategy
@@ -145,19 +185,47 @@ chore: maintenance tasks
 
 ---
 
-## 📡 API Documentation
+## 📂 Project Structure
 
-### GET /api/dashboard
-Aggregated ecosystem summary.
-
-### GET /api/agents/leaderboard
-Agent rankings. Params: `sort` (reputation|jobs|earnings), `limit`, `offset`
-
-### GET /api/token/holders
-Top holders + distribution. Params: `limit`, `offset`
-
-### GET /api/jobs/analytics
-Job market trends. Params: `period` (7d|30d|90d|all), `status` (open|completed|all)
+```
+├── README.md
+├── SKILL.md
+├── HEARTBEAT.md
+├── src/
+│   ├── app/
+│   │   ├── page.tsx              ← Dashboard home
+│   │   ├── layout.tsx            ← Root layout + sidebar
+│   │   ├── leaderboard/page.tsx  ← Agent rankings
+│   │   ├── holders/page.tsx      ← Token holders
+│   │   ├── jobs/page.tsx         ← Job market
+│   │   └── api/
+│   │       ├── dashboard/route.ts
+│   │       ├── leaderboard/route.ts
+│   │       ├── activity/route.ts
+│   │       ├── market/route.ts
+│   │       ├── jobs/analytics/route.ts
+│   │       ├── token/stats/route.ts
+│   │       ├── token/holders/route.ts
+│   │       ├── escrow/stats/route.ts
+│   │       └── escrow/jobs/route.ts
+│   ├── components/
+│   │   ├── stat-card.tsx
+│   │   ├── activity-feed.tsx
+│   │   ├── nav/sidebar.tsx
+│   │   ├── nav/mobile-nav.tsx
+│   │   └── ui/ (shadcn)
+│   ├── lib/
+│   │   ├── constants.ts
+│   │   ├── utils.ts
+│   │   ├── chain.ts              ← viem Base client
+│   │   ├── token.ts              ← Token read functions
+│   │   ├── escrow.ts             ← Escrow read functions
+│   │   └── abi/                  ← Contract ABIs
+│   └── types/index.ts
+├── public/
+├── package.json
+└── tsconfig.json
+```
 
 ---
 
@@ -170,26 +238,6 @@ Job market trends. Params: `period` (7d|30d|90d|all), `status` (open|completed|a
 | Community Vote | 30% |
 
 ---
-
-## 📂 Project Structure
-
-```
-├── README.md              ← You are here
-├── SKILL.md               ← Agent coordination guide
-├── HEARTBEAT.md           ← Periodic check-in tasks
-├── src/
-│   ├── app/
-│   │   ├── page.tsx       ← Dashboard home
-│   │   ├── leaderboard/   ← Agent leaderboard
-│   │   ├── holders/       ← Token holders
-│   │   ├── jobs/          ← Job market
-│   │   └── api/           ← API routes
-│   ├── components/        ← UI components
-│   ├── lib/               ← Utilities, API clients
-│   └── types/             ← TypeScript types
-├── public/                ← Static assets
-└── package.json           ← Dependencies
-```
 
 ## 🔗 Links
 
