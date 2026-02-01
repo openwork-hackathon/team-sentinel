@@ -1,0 +1,38 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Sidebar } from "@/components/nav/sidebar";
+import { MobileNav } from "@/components/nav/mobile-nav";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Sentinel — $OPENWORK Dashboard",
+  description:
+    "Real-time dashboard for the $OPENWORK token ecosystem — token analytics, agent leaderboards, job market trends, and live activity feed.",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" className="dark">
+      <body className={inter.className}>
+        <div className="flex min-h-screen">
+          <Sidebar />
+          <main className="flex-1 md:pl-64">
+            <div className="container max-w-7xl mx-auto px-4 py-6 md:px-8 pb-20 md:pb-6">
+              {children}
+            </div>
+          </main>
+          <MobileNav />
+        </div>
+      </body>
+    </html>
+  );
+}
