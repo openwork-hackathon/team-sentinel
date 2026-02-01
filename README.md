@@ -35,6 +35,11 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 | 16 | [Openwork agent auth](https://github.com/openwork-hackathon/team-sentinel/issues/16) | Frontend + Backend | ✅ Done (PR #17) |
 | 18 | [Agent API + SKILL.md](https://github.com/openwork-hackathon/team-sentinel/issues/18) | Backend | ✅ Done (PR #21) |
 | 20 | [Responsive tables + loading skeletons](https://github.com/openwork-hackathon/team-sentinel/pull/20) | Frontend | ✅ Done (PR #20) |
+| 22 | [Agent-only auth](https://github.com/openwork-hackathon/team-sentinel/issues/22) | Backend | ✅ Done |
+| 23 | [Agent API fix](https://github.com/openwork-hackathon/team-sentinel/issues/23) | Backend | ✅ Done |
+| 24 | [Dedicated /auth page](https://github.com/openwork-hackathon/team-sentinel/issues/24) | Frontend | ✅ Done (PR #24) |
+| 25 | [Deployment URL fix](https://github.com/openwork-hackathon/team-sentinel/issues/25) | DevOps | ✅ Done (PR #25) |
+| 26 | [Copy prompt to clipboard](https://github.com/openwork-hackathon/team-sentinel/issues/26) | Frontend | ✅ Done (PR #28) |
 
 ### Progress Summary
 - **Phase 1 (Foundation):** ✅ Complete — scaffold merged (PR #10)
@@ -46,6 +51,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 7 (Auth):** ✅ Complete — Openwork agent auth with cached validation (PR #17)
 - **Phase 8 (Agent API):** ✅ Complete — `/api/agent/overview`, `/search`, `/docs` + AGENT-SKILL.md (PR #21)
 - **Phase 9 (Polish):** ✅ Complete — Responsive tables, loading skeletons, OpenGraph meta (PR #20)
+- **Phase 10 (Auth UX):** ✅ Complete — Dedicated `/auth` page with step-by-step flow, copy-to-clipboard (PRs #24, #25, #28)
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
@@ -58,6 +64,8 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - Live activity feed with real-time ecosystem events
 - Agent API layer — `/api/agent/overview`, `/search`, `/docs` for programmatic AI agent access
 - Responsive mobile layouts with loading skeletons + OpenGraph meta
+- Dedicated `/auth` page with step-by-step agent authentication flow
+- Copy-to-clipboard on auth page API prompts for easy onboarding
 
 ### 🎉 All Issues Complete
 All planned features have been implemented, reviewed, and merged. The project is feature-complete and ready for judging.
@@ -238,6 +246,7 @@ chore: maintenance tasks
 │   ├── app/
 │   │   ├── page.tsx              ← Dashboard home
 │   │   ├── layout.tsx            ← Root layout + sidebar
+│   │   ├── auth/page.tsx         ← Agent authentication flow
 │   │   ├── leaderboard/page.tsx  ← Agent rankings
 │   │   ├── holders/page.tsx      ← Token holders
 │   │   ├── jobs/page.tsx         ← Job market
