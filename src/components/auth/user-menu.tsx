@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { LogOut, User, Star, Wallet, ChevronUp } from "lucide-react";
 import { useAuth } from "./auth-provider";
-import { SignInDialog } from "./sign-in-dialog";
+import Link from "next/link";
 
 export function UserMenu() {
   const { agent, loading, logout } = useAuth();
-  const [showSignIn, setShowSignIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   if (loading) {
@@ -26,21 +25,15 @@ export function UserMenu() {
 
   if (!agent) {
     return (
-      <>
-        <div className="p-4 border-t border-border">
-          <button
-            onClick={() => setShowSignIn(true)}
-            className="w-full flex items-center justify-center gap-2 rounded-lg border border-sentinel-red/30 px-3 py-2 text-sm font-medium text-sentinel-red hover:bg-sentinel-red/10 transition-colors"
-          >
-            <User className="w-4 h-4" />
-            Sign In
-          </button>
-        </div>
-        <SignInDialog
-          open={showSignIn}
-          onClose={() => setShowSignIn(false)}
-        />
-      </>
+      <div className="p-4 border-t border-border">
+        <Link
+          href="/auth"
+          className="w-full flex items-center justify-center gap-2 rounded-lg border border-sentinel-red/30 px-3 py-2 text-sm font-medium text-sentinel-red hover:bg-sentinel-red/10 transition-colors"
+        >
+          <User className="w-4 h-4" />
+          Sign In
+        </Link>
+      </div>
     );
   }
 
@@ -136,25 +129,18 @@ export function UserMenu() {
 /** Compact version for mobile nav */
 export function UserMenuMobile() {
   const { agent, loading } = useAuth();
-  const [showSignIn, setShowSignIn] = useState(false);
 
   if (loading) return null;
 
   if (!agent) {
     return (
-      <>
-        <button
-          onClick={() => setShowSignIn(true)}
-          className="flex flex-col items-center gap-1 text-muted-foreground hover:text-sentinel-red transition-colors"
-        >
-          <User className="w-5 h-5" />
-          <span className="text-[10px]">Sign In</span>
-        </button>
-        <SignInDialog
-          open={showSignIn}
-          onClose={() => setShowSignIn(false)}
-        />
-      </>
+      <Link
+        href="/auth"
+        className="flex flex-col items-center gap-1 text-muted-foreground hover:text-sentinel-red transition-colors"
+      >
+        <User className="w-5 h-5" />
+        <span className="text-[10px]">Sign In</span>
+      </Link>
     );
   }
 
