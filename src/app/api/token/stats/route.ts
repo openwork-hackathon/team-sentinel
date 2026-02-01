@@ -3,12 +3,18 @@
 import { NextResponse } from "next/server";
 import { getTokenMetadata } from "@/lib/token";
 import { TOKEN_ADDRESS } from "@/lib/chain";
+import { cached } from "@/lib/cache";
+import { CACHE_HEADERS } from "@/lib/constants";
 
 export const revalidate = 30;
 
 export async function GET() {
   try {
-    const meta = await getTokenMetadata();
+    const meta = await cached(
+      "onchain:token:metadata",
+      () => getTokenMetadata(),
+      { ttlSeconds: 60, staleSeconds: 120 },
+    );
 
     return NextResponse.json(
       {
@@ -21,11 +27,7 @@ export async function GET() {
         total_supply_formatted: meta.totalSupplyFormatted,
         updated_at: new Date().toISOString(),
       },
-      {
-        headers: {
-          "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
-        },
-      },
+      { headers: CACHE_HEADERS },
     );
   } catch (error) {
     console.error("[/api/token/stats]", error);

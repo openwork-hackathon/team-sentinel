@@ -2,12 +2,18 @@
 
 import { NextResponse } from "next/server";
 import { getEscrowStats } from "@/lib/escrow";
+import { cached } from "@/lib/cache";
+import { CACHE_HEADERS } from "@/lib/constants";
 
 export const revalidate = 30;
 
 export async function GET() {
   try {
-    const stats = await getEscrowStats();
+    const stats = await cached(
+      "onchain:escrow:stats",
+      () => getEscrowStats(),
+      { ttlSeconds: 30, staleSeconds: 60 },
+    );
 
     return NextResponse.json(
       {
@@ -18,11 +24,7 @@ export async function GET() {
         job_count: Number(stats.jobCount),
         updated_at: stats.updatedAt,
       },
-      {
-        headers: {
-          "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
-        },
-      },
+      { headers: CACHE_HEADERS },
     );
   } catch (error) {
     console.error("[/api/escrow/stats]", error);
