@@ -3,6 +3,7 @@
 
 import { NextResponse } from "next/server";
 import { OPENWORK_API, CACHE_HEADERS } from "@/lib/constants";
+import { cached } from "@/lib/cache";
 import type { LeaderboardEntry, LeaderboardResponse } from "@/types";
 
 interface UpstreamAgent {
@@ -18,15 +19,15 @@ export const revalidate = 30;
 
 export async function GET() {
   try {
-    const res = await fetch(`${OPENWORK_API}/agents`, {
-      next: { revalidate: 30 },
-    });
-
-    if (!res.ok) {
-      throw new Error(`Upstream /api/agents returned ${res.status}`);
-    }
-
-    const raw = await res.json();
+    const raw = await cached(
+      "upstream:agents",
+      async () => {
+        const res = await fetch(`${OPENWORK_API}/agents`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Upstream /api/agents returned ${res.status}`);
+        return res.json();
+      },
+      { ttlSeconds: 30 },
+    );
 
     // Normalise: API may return { agents: [...] } or bare array
     const agents: UpstreamAgent[] = Array.isArray(raw)

@@ -7,6 +7,7 @@
 
 import { NextResponse } from "next/server";
 import { OPENWORK_API, CACHE_HEADERS } from "@/lib/constants";
+import { cached } from "@/lib/cache";
 
 interface UpstreamJob {
   id: string;
@@ -113,16 +114,16 @@ export async function GET(request: Request) {
     const period = searchParams.get("period") ?? "30d";
     const statusFilter = searchParams.get("status") ?? "all";
 
-    // Fetch all jobs
-    const res = await fetch(`${OPENWORK_API}/jobs`, {
-      next: { revalidate: 30 },
-    });
-
-    if (!res.ok) {
-      throw new Error(`Upstream /api/jobs returned ${res.status}`);
-    }
-
-    const raw = await res.json();
+    // Fetch all jobs (cached)
+    const raw = await cached(
+      "upstream:jobs",
+      async () => {
+        const res = await fetch(`${OPENWORK_API}/jobs`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Upstream /api/jobs returned ${res.status}`);
+        return res.json();
+      },
+      { ttlSeconds: 30 },
+    );
     let jobs: UpstreamJob[] = Array.isArray(raw)
       ? raw
       : Array.isArray(raw?.jobs)

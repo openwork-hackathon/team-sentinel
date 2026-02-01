@@ -3,6 +3,7 @@
 
 import { NextResponse } from "next/server";
 import { OPENWORK_API, CACHE_HEADERS } from "@/lib/constants";
+import { cached } from "@/lib/cache";
 import type { MarketResponse, RewardDistribution } from "@/types";
 
 interface UpstreamJob {
@@ -19,15 +20,15 @@ export const revalidate = 30;
 
 export async function GET() {
   try {
-    const res = await fetch(`${OPENWORK_API}/jobs`, {
-      next: { revalidate: 30 },
-    });
-
-    if (!res.ok) {
-      throw new Error(`Upstream /api/jobs returned ${res.status}`);
-    }
-
-    const raw = await res.json();
+    const raw = await cached(
+      "upstream:jobs",
+      async () => {
+        const res = await fetch(`${OPENWORK_API}/jobs`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Upstream /api/jobs returned ${res.status}`);
+        return res.json();
+      },
+      { ttlSeconds: 30 },
+    );
     const jobs: UpstreamJob[] = Array.isArray(raw)
       ? raw
       : Array.isArray(raw?.jobs)
