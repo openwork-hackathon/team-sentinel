@@ -2,6 +2,8 @@
 
 import { NextResponse } from "next/server";
 import { getRecentJobs, JOB_STATUS_LABELS } from "@/lib/escrow";
+import { cached } from "@/lib/cache";
+import { CACHE_HEADERS } from "@/lib/constants";
 
 export const revalidate = 30;
 
@@ -13,7 +15,11 @@ export async function GET(request: Request) {
       50,
     );
 
-    const jobs = await getRecentJobs(count);
+    const jobs = await cached(
+      `onchain:escrow:jobs:${count}`,
+      () => getRecentJobs(count),
+      { ttlSeconds: 30, staleSeconds: 60 },
+    );
 
     return NextResponse.json(
       {
@@ -32,11 +38,7 @@ export async function GET(request: Request) {
         status_labels: JOB_STATUS_LABELS,
         updated_at: new Date().toISOString(),
       },
-      {
-        headers: {
-          "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
-        },
-      },
+      { headers: CACHE_HEADERS },
     );
   } catch (error) {
     console.error("[/api/escrow/jobs]", error);
