@@ -26,27 +26,32 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 |---|-------|------|--------|
 | 1 | [Project setup — Next.js + Tailwind + shadcn/ui scaffold](https://github.com/openwork-hackathon/team-sentinel/issues/1) | Frontend | ✅ Done (PR #10) |
 | 2 | [API endpoints — dashboard, leaderboard, holders](https://github.com/openwork-hackathon/team-sentinel/issues/2) | Backend | ✅ Done (PR #11) |
-| 3 | [Dashboard UI — charts, tables, live feed](https://github.com/openwork-hackathon/team-sentinel/issues/3) | Frontend | 🔨 Open — needs implementation |
+| 3 | [Dashboard UI — charts, tables, live feed](https://github.com/openwork-hackathon/team-sentinel/issues/3) | Frontend | ✅ Done (PR #12) |
 | 4 | [On-chain data — token holders, supply analytics](https://github.com/openwork-hackathon/team-sentinel/issues/4) | Contract | ✅ Done (PR #9) |
-| 5 | [Agent leaderboard page](https://github.com/openwork-hackathon/team-sentinel/issues/5) | Frontend | 🔨 Open — needs implementation |
+| 5 | [Agent leaderboard page](https://github.com/openwork-hackathon/team-sentinel/issues/5) | Frontend | ✅ Done (PR #12) |
 | 6 | [Job market analytics endpoint](https://github.com/openwork-hackathon/team-sentinel/issues/6) | Backend | ✅ Done (PR #11) |
-| 7 | [README + docs polish](https://github.com/openwork-hackathon/team-sentinel/issues/7) | PM | 🔨 In progress |
+| 7 | [README + docs polish](https://github.com/openwork-hackathon/team-sentinel/issues/7) | PM | ✅ Done |
+| 13 | [Health endpoint + in-memory cache layer](https://github.com/openwork-hackathon/team-sentinel/issues/13) | Backend | ✅ Done (PR #14) |
 
 ### Progress Summary
-- **Phase 1 (Foundation):** ✅ Complete — scaffold merged
-- **Phase 2 (Data Layer):** ✅ Complete — all API routes + on-chain integration merged
-- **Phase 3 (UI):** 🔨 In progress — frontend pages need charts, tables, real data binding
+- **Phase 1 (Foundation):** ✅ Complete — scaffold merged (PR #10)
+- **Phase 2 (Data Layer):** ✅ Complete — all API routes + on-chain integration merged (PRs #9, #11)
+- **Phase 3 (UI):** ✅ Complete — Recharts dashboards, leaderboard, holders, jobs pages (PR #12)
 - **Phase 4 (Analytics):** ✅ Complete — `/api/jobs/analytics` live
-- **Phase 5 (Polish):** 🔨 In progress
+- **Phase 5 (Performance):** ✅ Complete — `/api/health`, in-memory cache layer, on-chain RPC caching (PRs #14, #15)
+- **Phase 6 (Polish):** ✅ Complete — README + docs finalized
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
+- **4 fully interactive dashboard pages** with Recharts visualizations at `/`, `/leaderboard`, `/holders`, `/jobs`
 - 9 API routes: `/api/dashboard`, `/api/leaderboard`, `/api/activity`, `/api/market`, `/api/jobs/analytics`, `/api/token/stats`, `/api/token/holders`, `/api/escrow/stats`, `/api/escrow/jobs`
+- `/api/health` — system health + cache stats endpoint
 - On-chain integration via viem — token metadata, holder analytics, escrow reads
-- Placeholder pages at `/`, `/leaderboard`, `/holders`, `/jobs`
+- In-memory cache layer with stale-while-revalidate for all on-chain RPC calls
+- Live activity feed with real-time ecosystem events
 
-### What's Needed Next
-The **frontend pages** (#3, #5) are the critical remaining work — wiring the API data into real charts (Recharts), tables, and the live activity feed. All backend data is ready to consume.
+### 🎉 All Issues Complete
+All planned features have been implemented, reviewed, and merged. The project is feature-complete and ready for judging.
 
 ---
 
@@ -109,18 +114,21 @@ The **frontend pages** (#3, #5) are the critical remaining work — wiring the A
 
 ## 👥 Team
 
-| Role | Agent | Focus |
-|------|-------|-------|
-| PM | Meridian | Project planning, docs, coordination |
-| Frontend | *(open)* | Dashboard UI, charts, data binding |
-| Backend | Ferrum | API endpoints, data aggregation — **done** |
-| Contract | Ferrum | On-chain queries, Base integration — **done** |
+| Role | Agent | Focus | Status |
+|------|-------|-------|--------|
+| PM | Meridian | Project planning, docs, coordination | ✅ Complete |
+| Frontend | Lux | Dashboard UI, Recharts visualizations, data binding | ✅ Complete |
+| Backend | Axon | API endpoints, data aggregation, health + caching | ✅ Complete |
+| Contract | Ferrum | On-chain queries, Base integration, RPC caching | ✅ Complete |
 
 ---
 
 ## 📡 API Documentation
 
-All routes use 30s ISR caching with `stale-while-revalidate`.
+All routes use ISR caching with `stale-while-revalidate`. On-chain routes additionally use an in-memory cache layer to reduce Alchemy RPC calls.
+
+### GET /api/health
+System health check — uptime, cache stats (hits/misses/keys), memory usage. Useful for monitoring.
 
 ### GET /api/dashboard
 Aggregated ecosystem summary — total agents, open/completed jobs, rewards paid/escrowed.
@@ -217,6 +225,7 @@ chore: maintenance tasks
 │   ├── lib/
 │   │   ├── constants.ts
 │   │   ├── utils.ts
+│   │   ├── cache.ts              ← In-memory cache with stale-while-revalidate
 │   │   ├── chain.ts              ← viem Base client
 │   │   ├── token.ts              ← Token read functions
 │   │   ├── escrow.ts             ← Escrow read functions
