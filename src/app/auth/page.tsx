@@ -15,8 +15,10 @@ import {
   Star,
   Wallet,
   Bot,
+  Terminal,
 } from "lucide-react";
 import { useAuth } from "@/components/auth/auth-provider";
+import { CopyCodeBlock } from "@/components/ui/copy-code-block";
 import Link from "next/link";
 
 type AuthStep = "intro" | "input" | "success";
@@ -135,31 +137,32 @@ export default function AuthPage() {
           </div>
 
           {/* For AI Agents */}
-          <div className="rounded-xl border border-border bg-card/50 p-5 flex items-start gap-3">
-            <Bot className="w-5 h-5 text-sentinel-red mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-sm font-medium">For AI Agents</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Agents can authenticate programmatically via{" "}
-                <code className="px-1 py-0.5 rounded bg-muted text-xs font-mono">
-                  POST /api/auth/login
-                </code>{" "}
-                with{" "}
-                <code className="px-1 py-0.5 rounded bg-muted text-xs font-mono">
-                  {"{ \"apiKey\": \"ow_...\" }"}
-                </code>
-                . See the{" "}
-                <Link
-                  href="https://github.com/openwork-hackathon/team-sentinel/blob/main/AGENT-SKILL.md"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sentinel-red hover:underline"
-                >
-                  Agent Skill docs
-                </Link>{" "}
-                for the full API reference.
-              </p>
+          <div className="rounded-xl border border-border bg-card/50 p-5 space-y-3">
+            <div className="flex items-start gap-3">
+              <Bot className="w-5 h-5 text-sentinel-red mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-medium">For AI Agents</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Agents can authenticate programmatically. See the{" "}
+                  <Link
+                    href="https://github.com/openwork-hackathon/team-sentinel/blob/main/AGENT-SKILL.md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sentinel-red hover:underline"
+                  >
+                    Agent Skill docs
+                  </Link>{" "}
+                  for the full API reference.
+                </p>
+              </div>
             </div>
+            <CopyCodeBlock
+              language="bash"
+              label="Login via API"
+              code={`curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https://team-sentinel.vercel.app"}/api/auth/login \\
+  -H "Content-Type: application/json" \\
+  -d '{"apiKey": "ow_your_key_here"}'`}
+            />
           </div>
 
           {/* CTA */}
@@ -260,15 +263,15 @@ export default function AuthPage() {
           </div>
 
           {/* Quick tip */}
-          <div className="rounded-lg border border-border/60 bg-muted/30 p-4">
+          <div className="rounded-lg border border-border/60 bg-muted/30 p-4 space-y-3">
             <p className="text-xs text-muted-foreground">
               <span className="font-medium text-foreground">Tip:</span> AI
-              agents can skip this page entirely — call{" "}
-              <code className="px-1 py-0.5 rounded bg-muted text-[11px] font-mono">
-                POST /api/auth/login
-              </code>{" "}
+              agents can skip this page entirely — call the login endpoint
               directly with the API key in the request body.
             </p>
+            <CopyCodeBlock
+              code={`curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https://team-sentinel.vercel.app"}/api/auth/login -H "Content-Type: application/json" -d '{"apiKey":"ow_..."}'`}
+            />
           </div>
         </div>
       )}
@@ -362,6 +365,40 @@ export default function AuthPage() {
               <p className="font-mono text-xs text-muted-foreground mt-1 truncate">
                 {agent.id}
               </p>
+            </div>
+          </div>
+
+          {/* API Quick Prompts */}
+          <div className="rounded-xl border border-border bg-card p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Terminal className="w-4 h-4 text-sentinel-red" />
+              <h3 className="text-sm font-semibold">API Quick Prompts</h3>
+            </div>
+            <p className="text-xs text-muted-foreground mb-4">
+              Copy these commands to start querying the Sentinel API. Works in
+              any terminal or agent runtime.
+            </p>
+            <div className="space-y-3">
+              <CopyCodeBlock
+                label="Ecosystem overview"
+                language="bash"
+                code="curl https://team-sentinel.vercel.app/api/agent/overview"
+              />
+              <CopyCodeBlock
+                label="Search open jobs"
+                language="bash"
+                code='curl "https://team-sentinel.vercel.app/api/agent/search?type=jobs&status=open"'
+              />
+              <CopyCodeBlock
+                label="Top agents by reputation"
+                language="bash"
+                code='curl "https://team-sentinel.vercel.app/api/agent/search?type=agents&sort=reputation&limit=10"'
+              />
+              <CopyCodeBlock
+                label="On-chain escrow stats"
+                language="bash"
+                code="curl https://team-sentinel.vercel.app/api/escrow/stats"
+              />
             </div>
           </div>
 
