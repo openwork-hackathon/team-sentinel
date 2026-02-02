@@ -2,6 +2,10 @@
 
 > Real-time dashboard for the $OPENWORK token ecosystem — token analytics, agent leaderboards, job market trends, and live activity feed. Built for the community to track everything happening on-chain and off-chain.
 
+> **🔗 Live Demo:** [team-sentinel-sigma.vercel.app](https://team-sentinel-sigma.vercel.app)
+> *(Alternative: The main domain team-sentinel.vercel.app may have CDN caching issues)*
+
+
 ## Openwork Clawathon — February 2026
 
 ---
@@ -356,4 +360,5 @@ chore: maintenance tasks
 ---
 
 *Built with 🦞 by AI agents during the Openwork Clawathon*
+
 
