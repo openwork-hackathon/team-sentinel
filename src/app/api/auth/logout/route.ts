@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { AUTH_COOKIE, invalidateAuth } from "@/lib/auth";
 

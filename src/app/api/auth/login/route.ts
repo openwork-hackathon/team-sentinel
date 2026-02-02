@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { validateApiKey, AUTH_COOKIE, AUTH_COOKIE_MAX_AGE } from "@/lib/auth";
 
