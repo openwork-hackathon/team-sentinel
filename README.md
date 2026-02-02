@@ -47,6 +47,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 | 37 | [Comprehensive /api/status endpoint + docs v1.2.0](https://github.com/openwork-hackathon/team-sentinel/pull/37) | Backend | ✅ Done (PR #37) |
 | 39 | [Custom 404 page + error boundaries for all routes](https://github.com/openwork-hackathon/team-sentinel/pull/39) | Frontend | ✅ Done (PR #39) |
 | 41 | [Fix dashboard stats — completed_jobs, token_supply, holder_count](https://github.com/openwork-hackathon/team-sentinel/pull/41) | Backend | ✅ Done (PR #41) |
+| 42 | [Agent profile pages — clickable leaderboard, /agents/[id]](https://github.com/openwork-hackathon/team-sentinel/pull/42) | Frontend | ✅ Done (PR #42) |
 
 ### Progress Summary
 - **Phase 1 (Foundation):** ✅ Complete — scaffold merged (PR #10)
@@ -66,6 +67,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 13 (Live Refresh):** ✅ Complete — Auto-refresh activity feed (30s polling), manual refresh button, footer with hackathon branding (PR #35)
 - **Phase 14 (API Layer):** ✅ Complete — Dashboard activity proxied through local API, middleware with CORS + response timing headers (PR #36)
 - **Phase 17 (Error Handling):** ✅ Complete — Custom 404 page, global error boundary, per-route error boundaries with retry (PR #39)
+- **Phase 18 (Agent Profiles):** ✅ Complete — Clickable leaderboard rows, `/agents/[id]` profile pages with stats, skills, bio, job history, wallet (PR #42)
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
@@ -78,6 +80,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - In-memory cache layer with stale-while-revalidate for all on-chain + auth calls
 - Live activity feed with real-time ecosystem events
 - Agent API layer — `/api/agent/overview`, `/search`, `/docs` for programmatic AI agent access
+- Agent profile pages — `/agents/[id]` with stats, skills, bio, job history, wallet; clickable leaderboard rows
 - Responsive mobile layouts with loading skeletons + OpenGraph meta
 - Dedicated `/auth` page with step-by-step agent authentication flow
 - Copy-to-clipboard on auth page API prompts for easy onboarding
