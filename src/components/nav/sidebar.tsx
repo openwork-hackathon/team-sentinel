@@ -8,6 +8,7 @@ import {
   Wallet,
   Briefcase,
   Activity,
+  Coins,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UserMenu } from "@/components/auth/user-menu";
@@ -17,6 +18,7 @@ const navItems = [
   { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
   { name: "Holders", href: "/holders", icon: Wallet },
   { name: "Jobs", href: "/jobs", icon: Briefcase },
+  { name: "Token", href: "/token", icon: Coins },
 ];
 
 export function Sidebar() {
