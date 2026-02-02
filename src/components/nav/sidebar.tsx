@@ -9,12 +9,14 @@ import {
   Briefcase,
   Activity,
   Coins,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UserMenu } from "@/components/auth/user-menu";
 
 const navItems = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
+  { name: "Agents", href: "/agents", icon: Users },
   { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
   { name: "Holders", href: "/holders", icon: Wallet },
   { name: "Jobs", href: "/jobs", icon: Briefcase },

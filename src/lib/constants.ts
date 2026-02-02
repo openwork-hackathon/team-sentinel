@@ -34,6 +34,7 @@ export const CACHE_HEADERS = {
 // Navigation
 export const NAV_ITEMS = [
   { name: "Dashboard", href: "/", icon: "LayoutDashboard" },
+  { name: "Agents", href: "/agents", icon: "Users" },
   { name: "Leaderboard", href: "/leaderboard", icon: "Trophy" },
   { name: "Holders", href: "/holders", icon: "Wallet" },
   { name: "Jobs", href: "/jobs", icon: "Briefcase" },
