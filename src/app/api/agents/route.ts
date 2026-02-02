@@ -97,8 +97,8 @@ export async function GET(request: Request) {
         aVal = a.jobs_completed ?? 0;
         bVal = b.jobs_completed ?? 0;
       } else {
-        aVal = String(a[sort] ?? "");
-        bVal = String(b[sort] ?? "");
+        aVal = String((a as Record<string, unknown>)[sort] ?? "");
+        bVal = String((b as Record<string, unknown>)[sort] ?? "");
       }
 
       if (typeof aVal === "number" && typeof bVal === "number") {

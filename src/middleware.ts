@@ -1,8 +1,10 @@
-// Middleware — response time, CORS, and CDN cache-busting for API routes
+// Middleware — response time, CORS, and CDN cache-busting for ALL routes
 //
 // Prevents Vercel CDN from caching 404/error responses by setting
-// Vercel-CDN-Cache-Control: no-store as default. Individual route
-// handlers can override with their own Cache-Control for 200 responses.
+// Vercel-CDN-Cache-Control: no-store on every response. This stops
+// stale 404s from persisting when new pages are deployed.
+// Individual route handlers can still set their own Cache-Control
+// for successful responses.
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
@@ -10,6 +12,11 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const start = Date.now();
   const response = NextResponse.next();
+
+  // Prevent Vercel CDN from caching 404/error responses on ANY route.
+  // Without this, deploying a new page (e.g. /agents) can still show
+  // a cached 404 from before the page existed.
+  response.headers.set("Vercel-CDN-Cache-Control", "no-store");
 
   if (request.nextUrl.pathname.startsWith("/api/")) {
     response.headers.set("X-Response-Time", `${Date.now() - start}ms`);
@@ -21,16 +28,12 @@ export function middleware(request: NextRequest) {
       "Access-Control-Allow-Headers",
       "Content-Type, Authorization",
     );
-
-    // Prevent Vercel CDN from caching error responses (404/500).
-    // Route handlers set their own Cache-Control for successful responses,
-    // which the CDN will respect. This is a safety net for error pages.
-    response.headers.set("Vercel-CDN-Cache-Control", "no-store");
   }
 
   return response;
 }
 
 export const config = {
-  matcher: "/api/:path*",
+  // Match all routes except static assets and Next.js internals
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
