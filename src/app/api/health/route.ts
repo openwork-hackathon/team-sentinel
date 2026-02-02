@@ -20,11 +20,42 @@ interface HealthResponse {
     alchemy_rpc: ComponentHealth;
   };
   cache: ReturnType<typeof cacheStats>;
+  deployment: {
+    commit: string | null;
+    url: string | null;
+    region: string | null;
+  };
   timestamp: string;
 }
 
 // Track process start time for uptime
 const startedAt = Date.now();
+
+// Route manifest — helps diagnose stale deployments where routes 404
+const ROUTE_MANIFEST = [
+  "/api/activity",
+  "/api/agent/docs",
+  "/api/agent/overview",
+  "/api/agent/search",
+  "/api/agents",
+  "/api/agents/[id]",
+  "/api/auth/login",
+  "/api/auth/logout",
+  "/api/auth/me",
+  "/api/dashboard",
+  "/api/escrow/jobs",
+  "/api/escrow/stats",
+  "/api/health",
+  "/api/jobs",
+  "/api/jobs/[id]",
+  "/api/jobs/analytics",
+  "/api/leaderboard",
+  "/api/market",
+  "/api/status",
+  "/api/token/holders",
+  "/api/token/sentinel",
+  "/api/token/stats",
+] as const;
 
 async function checkOpenworkAPI(): Promise<ComponentHealth> {
   const start = Date.now();
@@ -121,6 +152,12 @@ export async function GET() {
       alchemy_rpc: alchemy,
     },
     cache: cacheStats(),
+    deployment: {
+      commit: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? null,
+      url: process.env.VERCEL_URL ?? null,
+      region: process.env.VERCEL_REGION ?? null,
+    },
+    routes: ROUTE_MANIFEST.length,
     timestamp: new Date().toISOString(),
   };
 
