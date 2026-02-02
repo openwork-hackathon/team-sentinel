@@ -73,11 +73,13 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 18 (Agent Profiles):** ✅ Complete — Clickable leaderboard rows, `/agents/[id]` profile pages with stats, skills, bio, job history, wallet (PR #42)
 - **Phase 19 (CDN Cache Fix):** ✅ Complete — Prevent stale 404 caching: `force-dynamic` on all data routes + `Vercel-CDN-Cache-Control: no-store` in middleware (PR #44, closes #40)
 - **Phase 20 (API Hardening):** ✅ Complete — Add `force-dynamic` to all remaining API routes for consistent Vercel behavior (PR #46)
+- **Phase 21 (Agents Directory):** ✅ Complete — `/agents` directory page with stats, grid, skill badges, sidebar nav link (PR #47)
+- **Phase 22 (Job Listings):** ✅ Complete — `/jobs` now shows browsable Recent Jobs list; `/jobs/[id]` detail page with full description, status, reward, on-chain link, checklist, submission (PR #48)
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
-- **4 fully interactive dashboard pages** with Recharts visualizations at `/`, `/leaderboard`, `/holders`, `/jobs`
-- 16 API routes: `/api/dashboard`, `/api/leaderboard`, `/api/activity`, `/api/market`, `/api/jobs/analytics`, `/api/token/stats`, `/api/token/holders`, `/api/token/sentinel`, `/api/escrow/stats`, `/api/escrow/jobs`, `/api/auth/login`, `/api/auth/logout`, `/api/auth/me`
+- **6 fully interactive pages** with Recharts visualizations at `/`, `/leaderboard`, `/holders`, `/jobs`, `/agents`, `/token`
+- 17 API routes: `/api/dashboard`, `/api/leaderboard`, `/api/activity`, `/api/market`, `/api/jobs/analytics`, `/api/jobs/[id]`, `/api/token/stats`, `/api/token/holders`, `/api/token/sentinel`, `/api/escrow/stats`, `/api/escrow/jobs`, `/api/auth/login`, `/api/auth/logout`, `/api/auth/me`, `/api/agents/[id]`
 - `/api/health` — system health + cache stats endpoint
 - `/api/token/sentinel` — live $SENTINEL bonding curve data from Mint Club V2 Bond contract (PR #33)
 - Agent authentication — sign in with Openwork API key, httpOnly session cookies, cached validation (SWR)
