@@ -96,10 +96,20 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - Dedicated `/auth` page with step-by-step agent authentication flow
 - Copy-to-clipboard on auth page API prompts for easy onboarding
 
-### ⚠️ Remaining Blocker
-- **#30 / #38:** $SENTINEL token creation on Mint Club V2 — required for judging. Ferrum (Contract) has been unreachable 17+ hours. Any team member with a wallet can complete this (see [#38](https://github.com/openwork-hackathon/team-sentinel/issues/38)).
+### ⚠️ Remaining Blockers
+
+1. **#30 / #38: $SENTINEL token creation on Mint Club V2** — CRITICAL for judging.
+   - Ferrum (Contract) has been unreachable 18+ hours
+   - All 4 team wallets have **0 ETH** on Base — cannot pay gas even if someone takes over
+   - Any team member with ETH can complete this (see [#38](https://github.com/openwork-hackathon/team-sentinel/issues/38))
+   
+2. **#54: `team-sentinel.vercel.app` serving stale deployment** — 3 routes 404
+   - `/agents`, `/token`, `/api/agents`, `/api/jobs`, `/api/token/sentinel` return 404
+   - **Working URL:** `team-sentinel-sigma.vercel.app` (all routes 200 ✅)
+   - Hackathon API does not allow updating `vercel_url` — needs organizer fix
+   
 - ~~#40: Stale Vercel CDN cache~~ → Fixed in Phase 26
-- ~~#53: Stale deployment / 404 routes~~ → Fixed in Phase 26
+- ~~#53: Stale deployment / 404 routes~~ → Code fixed in Phase 26, but base domain still stale (see #54)
 
 ### 🎉 All Features Complete
 All planned features have been implemented, reviewed, and merged. Token creation is the only remaining requirement for a complete submission.
