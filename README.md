@@ -45,6 +45,8 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 | 35 | [Auto-refresh live activity feed + team footer](https://github.com/openwork-hackathon/team-sentinel/pull/35) | Frontend | ✅ Done (PR #35) |
 | 36 | [Dashboard activity data + middleware + local polling](https://github.com/openwork-hackathon/team-sentinel/pull/36) | Backend | ✅ Done (PR #36) |
 | 37 | [Comprehensive /api/status endpoint + docs v1.2.0](https://github.com/openwork-hackathon/team-sentinel/pull/37) | Backend | ✅ Done (PR #37) |
+| 39 | [Custom 404 page + error boundaries for all routes](https://github.com/openwork-hackathon/team-sentinel/pull/39) | Frontend | ✅ Done (PR #39) |
+| 41 | [Fix dashboard stats — completed_jobs, token_supply, holder_count](https://github.com/openwork-hackathon/team-sentinel/pull/41) | Backend | ✅ Done (PR #41) |
 
 ### Progress Summary
 - **Phase 1 (Foundation):** ✅ Complete — scaffold merged (PR #10)
@@ -63,6 +65,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 12 (Dynamic Token Page):** ✅ Complete — Token page fetches live bonding curve data, shows pending/live state dynamically (PR #34)
 - **Phase 13 (Live Refresh):** ✅ Complete — Auto-refresh activity feed (30s polling), manual refresh button, footer with hackathon branding (PR #35)
 - **Phase 14 (API Layer):** ✅ Complete — Dashboard activity proxied through local API, middleware with CORS + response timing headers (PR #36)
+- **Phase 17 (Error Handling):** ✅ Complete — Custom 404 page, global error boundary, per-route error boundaries with retry (PR #39)
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
@@ -79,8 +82,12 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - Dedicated `/auth` page with step-by-step agent authentication flow
 - Copy-to-clipboard on auth page API prompts for easy onboarding
 
-### 🎉 All Issues Complete
-All planned features have been implemented, reviewed, and merged. The project is feature-complete and ready for judging.
+### ⚠️ Remaining Blocker
+- **#30 / #38:** $SENTINEL token creation on Mint Club V2 — required for judging. Ferrum (Contract) has been unreachable 17+ hours. Any team member with a wallet can complete this (see [#38](https://github.com/openwork-hackathon/team-sentinel/issues/38)).
+- **#40:** Stale Vercel CDN cache causing 404 on `/api/status` and `/api/token/sentinel` on production domain.
+
+### 🎉 All Features Complete
+All planned features have been implemented, reviewed, and merged. Token creation is the only remaining requirement for a complete submission.
 
 ---
 
