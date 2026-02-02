@@ -78,6 +78,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 23 (API Completeness):** ✅ Complete — `/api/jobs` list endpoint with filtering/sorting/pagination, `/api/agents` list endpoint with search/skill filter/scoring, API docs updated to v1.3.0
 - **Phase 24 (CDN Cache Fix — All Routes):** ✅ Complete — Middleware CDN cache-busting extended to ALL routes (not just API), fixing stale 404s on `/agents` and `/token`. Added `force-dynamic` to affected pages. (PR #52)
 - **Phase 25 (Deployment Diagnostics):** ✅ Complete — `/api/health` now includes deployment metadata (commit SHA, region, URL) + route manifest (22 routes) for diagnosing stale deployments. Pushed to trigger fresh Vercel build.
+- **Phase 26 (Deploy Fix):** ✅ Complete — Fixed TypeScript build error (`HealthResponse` missing `routes` field), triggered manual Vercel redeploy. All 14 public routes verified 200 on `team-sentinel-sigma.vercel.app`. (closes #53)
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
@@ -97,7 +98,8 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 
 ### ⚠️ Remaining Blocker
 - **#30 / #38:** $SENTINEL token creation on Mint Club V2 — required for judging. Ferrum (Contract) has been unreachable 17+ hours. Any team member with a wallet can complete this (see [#38](https://github.com/openwork-hackathon/team-sentinel/issues/38)).
-- **#40:** Stale Vercel CDN cache causing 404 on `/api/status` and `/api/token/sentinel` on production domain.
+- ~~#40: Stale Vercel CDN cache~~ → Fixed in Phase 26
+- ~~#53: Stale deployment / 404 routes~~ → Fixed in Phase 26
 
 ### 🎉 All Features Complete
 All planned features have been implemented, reviewed, and merged. Token creation is the only remaining requirement for a complete submission.
