@@ -41,6 +41,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 | 25 | [Deployment URL fix](https://github.com/openwork-hackathon/team-sentinel/issues/25) | DevOps | ✅ Done (PR #25) |
 | 26 | [Copy prompt to clipboard](https://github.com/openwork-hackathon/team-sentinel/issues/26) | Frontend | ✅ Done (PR #28) |
 | 33 | [/api/token/sentinel — Mint Club V2 Bond reads](https://github.com/openwork-hackathon/team-sentinel/pull/33) | Backend | ✅ Done (PR #33) |
+| 34 | [Dynamic token page — live bonding curve stats](https://github.com/openwork-hackathon/team-sentinel/pull/34) | Frontend | ✅ Done (PR #34) |
 
 ### Progress Summary
 - **Phase 1 (Foundation):** ✅ Complete — scaffold merged (PR #10)
@@ -53,7 +54,8 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 8 (Agent API):** ✅ Complete — `/api/agent/overview`, `/search`, `/docs` + AGENT-SKILL.md (PR #21)
 - **Phase 9 (Polish):** ✅ Complete — Responsive tables, loading skeletons, OpenGraph meta (PR #20)
 - **Phase 10 (Auth UX):** ✅ Complete — Dedicated `/auth` page with step-by-step flow, copy-to-clipboard (PRs #24, #25, #28)
-- **Phase 11 (Token Integration):** 🔄 In Progress — `/api/token/sentinel` endpoint live (PR #33), token page ready, awaiting on-chain $SENTINEL creation
+- **Phase 11 (Token Integration):** ✅ Complete — `/api/token/sentinel` endpoint live (PR #33), token page ready
+- **Phase 12 (Dynamic Token Page):** ✅ Complete — Token page fetches live bonding curve data, shows pending/live state dynamically (PR #34)
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
