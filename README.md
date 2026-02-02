@@ -56,6 +56,8 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 10 (Auth UX):** ✅ Complete — Dedicated `/auth` page with step-by-step flow, copy-to-clipboard (PRs #24, #25, #28)
 - **Phase 11 (Token Integration):** ✅ Complete — `/api/token/sentinel` endpoint live (PR #33), token page ready
 - **Phase 12 (Dynamic Token Page):** ✅ Complete — Token page fetches live bonding curve data, shows pending/live state dynamically (PR #34)
+- **Phase 13 (Live Refresh):** ✅ Complete — Auto-refresh activity feed (30s polling), manual refresh button, footer with hackathon branding (PR #35)
+- **Phase 14 (API Layer):** ✅ Complete — Dashboard activity proxied through local API, middleware with CORS + response timing headers (PR #36)
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
@@ -268,7 +270,8 @@ chore: maintenance tasks
 │   │       └── token/sentinel/route.ts  ← Mint Club V2 Bond reads
 │   ├── components/
 │   │   ├── stat-card.tsx
-│   │   ├── activity-feed.tsx
+│   │   ├── activity-feed.tsx     ← LiveActivityFeed with auto-refresh
+│   │   ├── footer.tsx
 │   │   ├── nav/sidebar.tsx
 │   │   ├── nav/mobile-nav.tsx
 │   │   └── ui/ (shadcn)
