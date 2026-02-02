@@ -40,6 +40,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 | 24 | [Dedicated /auth page](https://github.com/openwork-hackathon/team-sentinel/issues/24) | Frontend | ✅ Done (PR #24) |
 | 25 | [Deployment URL fix](https://github.com/openwork-hackathon/team-sentinel/issues/25) | DevOps | ✅ Done (PR #25) |
 | 26 | [Copy prompt to clipboard](https://github.com/openwork-hackathon/team-sentinel/issues/26) | Frontend | ✅ Done (PR #28) |
+| 33 | [/api/token/sentinel — Mint Club V2 Bond reads](https://github.com/openwork-hackathon/team-sentinel/pull/33) | Backend | ✅ Done (PR #33) |
 
 ### Progress Summary
 - **Phase 1 (Foundation):** ✅ Complete — scaffold merged (PR #10)
@@ -52,12 +53,14 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 8 (Agent API):** ✅ Complete — `/api/agent/overview`, `/search`, `/docs` + AGENT-SKILL.md (PR #21)
 - **Phase 9 (Polish):** ✅ Complete — Responsive tables, loading skeletons, OpenGraph meta (PR #20)
 - **Phase 10 (Auth UX):** ✅ Complete — Dedicated `/auth` page with step-by-step flow, copy-to-clipboard (PRs #24, #25, #28)
+- **Phase 11 (Token Integration):** 🔄 In Progress — `/api/token/sentinel` endpoint live (PR #33), token page ready, awaiting on-chain $SENTINEL creation
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
 - **4 fully interactive dashboard pages** with Recharts visualizations at `/`, `/leaderboard`, `/holders`, `/jobs`
-- 15 API routes: `/api/dashboard`, `/api/leaderboard`, `/api/activity`, `/api/market`, `/api/jobs/analytics`, `/api/token/stats`, `/api/token/holders`, `/api/escrow/stats`, `/api/escrow/jobs`, `/api/auth/login`, `/api/auth/logout`, `/api/auth/me`
+- 16 API routes: `/api/dashboard`, `/api/leaderboard`, `/api/activity`, `/api/market`, `/api/jobs/analytics`, `/api/token/stats`, `/api/token/holders`, `/api/token/sentinel`, `/api/escrow/stats`, `/api/escrow/jobs`, `/api/auth/login`, `/api/auth/logout`, `/api/auth/me`
 - `/api/health` — system health + cache stats endpoint
+- `/api/token/sentinel` — live $SENTINEL bonding curve data from Mint Club V2 Bond contract (PR #33)
 - Agent authentication — sign in with Openwork API key, httpOnly session cookies, cached validation (SWR)
 - On-chain integration via viem — token metadata, holder analytics, escrow reads
 - In-memory cache layer with stale-while-revalidate for all on-chain + auth calls
@@ -259,7 +262,8 @@ chore: maintenance tasks
 │   │       ├── token/stats/route.ts
 │   │       ├── token/holders/route.ts
 │   │       ├── escrow/stats/route.ts
-│   │       └── escrow/jobs/route.ts
+│   │       ├── escrow/jobs/route.ts
+│   │       └── token/sentinel/route.ts  ← Mint Club V2 Bond reads
 │   ├── components/
 │   │   ├── stat-card.tsx
 │   │   ├── activity-feed.tsx
@@ -273,7 +277,8 @@ chore: maintenance tasks
 │   │   ├── chain.ts              ← viem Base client
 │   │   ├── token.ts              ← Token read functions
 │   │   ├── escrow.ts             ← Escrow read functions
-│   │   └── abi/                  ← Contract ABIs
+│   │   ├── sentinel-token.ts    ← Mint Club V2 Bond reads for $SENTINEL
+│   │   └── abi/                  ← Contract ABIs (ERC20, Escrow, MCV2 Bond)
 │   └── types/index.ts
 ├── public/
 ├── package.json
