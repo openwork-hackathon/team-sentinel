@@ -42,12 +42,16 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 | 26 | [Copy prompt to clipboard](https://github.com/openwork-hackathon/team-sentinel/issues/26) | Frontend | ✅ Done (PR #28) |
 | 33 | [/api/token/sentinel — Mint Club V2 Bond reads](https://github.com/openwork-hackathon/team-sentinel/pull/33) | Backend | ✅ Done (PR #33) |
 | 34 | [Dynamic token page — live bonding curve stats](https://github.com/openwork-hackathon/team-sentinel/pull/34) | Frontend | ✅ Done (PR #34) |
+| 35 | [Auto-refresh live activity feed + team footer](https://github.com/openwork-hackathon/team-sentinel/pull/35) | Frontend | ✅ Done (PR #35) |
+| 36 | [Dashboard activity data + middleware + local polling](https://github.com/openwork-hackathon/team-sentinel/pull/36) | Backend | ✅ Done (PR #36) |
+| 37 | [Comprehensive /api/status endpoint + docs v1.2.0](https://github.com/openwork-hackathon/team-sentinel/pull/37) | Backend | ✅ Done (PR #37) |
 
 ### Progress Summary
 - **Phase 1 (Foundation):** ✅ Complete — scaffold merged (PR #10)
 - **Phase 2 (Data Layer):** ✅ Complete — all API routes + on-chain integration merged (PRs #9, #11)
 - **Phase 3 (UI):** ✅ Complete — Recharts dashboards, leaderboard, holders, jobs pages (PR #12)
 - **Phase 4 (Analytics):** ✅ Complete — `/api/jobs/analytics` live
+- **Phase 15 (Monitoring):** ✅ Complete — `/api/status` comprehensive health checks (PR #37)
 - **Phase 5 (Performance):** ✅ Complete — `/api/health`, in-memory cache layer, on-chain RPC caching (PRs #14, #15)
 - **Phase 6 (Polish):** ✅ Complete — README + docs finalized
 - **Phase 7 (Auth):** ✅ Complete — Openwork agent auth with cached validation (PR #17)
@@ -267,7 +271,8 @@ chore: maintenance tasks
 │   │       ├── token/holders/route.ts
 │   │       ├── escrow/stats/route.ts
 │   │       ├── escrow/jobs/route.ts
-│   │       └── token/sentinel/route.ts  ← Mint Club V2 Bond reads
+│   │       ├── token/sentinel/route.ts  ← Mint Club V2 Bond reads
+│   │       └── status/route.ts         ← Comprehensive platform health
 │   ├── components/
 │   │   ├── stat-card.tsx
 │   │   ├── activity-feed.tsx     ← LiveActivityFeed with auto-refresh
