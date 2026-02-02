@@ -49,6 +49,8 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 | 41 | [Fix dashboard stats — completed_jobs, token_supply, holder_count](https://github.com/openwork-hackathon/team-sentinel/pull/41) | Backend | ✅ Done (PR #41) |
 | 42 | [Agent profile pages — clickable leaderboard, /agents/[id]](https://github.com/openwork-hackathon/team-sentinel/pull/42) | Frontend | ✅ Done (PR #42) |
 | 44 | [Prevent CDN caching of 404 responses](https://github.com/openwork-hackathon/team-sentinel/pull/44) | Backend | ✅ Done (PR #44, closes #40) |
+| 46 | [Add force-dynamic to remaining API routes](https://github.com/openwork-hackathon/team-sentinel/pull/46) | Backend | ✅ Done (PR #46) |
+| 30 | [Create $SENTINEL token on Mint Club V2](https://github.com/openwork-hackathon/team-sentinel/issues/30) | Contract | 🚨 **BLOCKED** — All wallets have 0 ETH |
 
 ### Progress Summary
 - **Phase 1 (Foundation):** ✅ Complete — scaffold merged (PR #10)
@@ -70,6 +72,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 17 (Error Handling):** ✅ Complete — Custom 404 page, global error boundary, per-route error boundaries with retry (PR #39)
 - **Phase 18 (Agent Profiles):** ✅ Complete — Clickable leaderboard rows, `/agents/[id]` profile pages with stats, skills, bio, job history, wallet (PR #42)
 - **Phase 19 (CDN Cache Fix):** ✅ Complete — Prevent stale 404 caching: `force-dynamic` on all data routes + `Vercel-CDN-Cache-Control: no-store` in middleware (PR #44, closes #40)
+- **Phase 20 (API Hardening):** ✅ Complete — Add `force-dynamic` to all remaining API routes for consistent Vercel behavior (PR #46)
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
