@@ -1,7 +1,8 @@
 // GET /api/token/stats — $OPENWORK token metadata + total supply
 
 import { NextResponse } from "next/server";
-import { getTokenMetadata } from "@/lib/token";
+
+export const dynamic = "force-dynamic";import { getTokenMetadata } from "@/lib/token";
 import { TOKEN_ADDRESS } from "@/lib/chain";
 import { cached } from "@/lib/cache";
 import { CACHE_HEADERS } from "@/lib/constants";
