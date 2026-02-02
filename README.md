@@ -81,6 +81,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 26 (Deploy Fix):** ✅ Complete
 - **Phase 27 (Chart Fix + Dashboard Redirect):** ✅ Complete — Job Activity trend chart was showing 0 completed jobs due to missing `verified` status mapping; added `/dashboard` redirect to `/` (PR #55) — Fixed TypeScript build error (`HealthResponse` missing `routes` field), triggered manual Vercel redeploy. All 14 public routes verified 200 on `team-sentinel-sigma.vercel.app`. (closes #53)
 - **Phase 28 (Config-Level Dashboard Redirect):** ✅ Complete — Moved `/dashboard` → `/` redirect to `next.config.js` for CDN edge-level handling (bypasses stale cache). Added `force-dynamic` fallback on dashboard page. (PR #56)
+- **Phase 29 (Edge Middleware Redirect):** ✅ Complete — Added Next.js edge middleware for `/dashboard` redirect. Runs at Vercel edge BEFORE CDN cache, guaranteeing redirect even with stale 404 entries.
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
