@@ -1,7 +1,8 @@
 // GET /api/escrow/jobs — recent escrow jobs
 
 import { NextResponse } from "next/server";
-import { getRecentJobs, JOB_STATUS_LABELS } from "@/lib/escrow";
+
+export const dynamic = "force-dynamic";import { getRecentJobs, JOB_STATUS_LABELS } from "@/lib/escrow";
 import { cached } from "@/lib/cache";
 import { CACHE_HEADERS } from "@/lib/constants";
 

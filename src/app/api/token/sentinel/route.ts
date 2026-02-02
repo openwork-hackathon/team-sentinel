@@ -13,7 +13,8 @@ import { NextResponse } from "next/server";
 import { getSentinelTokenData } from "@/lib/sentinel-token";
 import { cached } from "@/lib/cache";
 
-export const revalidate = 30;
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {

@@ -6,7 +6,8 @@
 //   status — open | completed | disputed | all (default: all)
 
 import { NextResponse } from "next/server";
-import { OPENWORK_API, CACHE_HEADERS } from "@/lib/constants";
+
+export const dynamic = "force-dynamic";import { OPENWORK_API, CACHE_HEADERS } from "@/lib/constants";
 import { cached } from "@/lib/cache";
 
 interface UpstreamJob {

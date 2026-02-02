@@ -1,7 +1,8 @@
 // GET /api/token/holders — top $OPENWORK holders with balances
 
 import { NextResponse } from "next/server";
-import { getTopHolders } from "@/lib/token";
+
+export const dynamic = "force-dynamic";import { getTopHolders } from "@/lib/token";
 import { cached } from "@/lib/cache";
 
 export const revalidate = 60;

@@ -2,7 +2,8 @@
 // Aggregates open/completed counts, reward stats, skill distribution.
 
 import { NextResponse } from "next/server";
-import { OPENWORK_API, CACHE_HEADERS } from "@/lib/constants";
+
+export const dynamic = "force-dynamic";import { OPENWORK_API, CACHE_HEADERS } from "@/lib/constants";
 import { cached } from "@/lib/cache";
 import type { MarketResponse, RewardDistribution } from "@/types";
 

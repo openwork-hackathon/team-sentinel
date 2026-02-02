@@ -1,7 +1,8 @@
 // GET /api/escrow/stats — totalEscrowed, totalReleased, jobCount
 
 import { NextResponse } from "next/server";
-import { getEscrowStats } from "@/lib/escrow";
+
+export const dynamic = "force-dynamic";import { getEscrowStats } from "@/lib/escrow";
 import { cached } from "@/lib/cache";
 import { CACHE_HEADERS } from "@/lib/constants";
 
