@@ -2,10 +2,10 @@
 
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";import { getTopHolders } from "@/lib/token";
-import { cached } from "@/lib/cache";
+export const dynamic = "force-dynamic";
 
-export const revalidate = 60;
+import { getTopHolders } from "@/lib/token";
+import { cached } from "@/lib/cache";
 
 export async function GET(request: Request) {
   try {

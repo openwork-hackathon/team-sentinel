@@ -4,11 +4,12 @@
 
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";import { OPENWORK_API, CACHE_HEADERS } from "@/lib/constants";
-import { cached } from "@/lib/cache";
-import type { ActivityItem, DashboardSummary } from "@/types";
+export const dynamic = "force-dynamic";
 
-export const revalidate = 30;
+import { OPENWORK_API, CACHE_HEADERS } from "@/lib/constants";
+import { cached } from "@/lib/cache";
+import { getTopHolders } from "@/lib/token";
+import type { ActivityItem, DashboardSummary } from "@/types";
 
 async function fetchUpstream<T>(url: string): Promise<T | null> {
   const res = await fetch(url, { cache: "no-store" });
@@ -154,17 +155,18 @@ export async function GET() {
       }
     }
 
-    // Holder count from our cached token/holders endpoint (if available)
+    // Holder count — direct lib call (no circular self-fetch)
     let holderCount = 0;
     try {
       const holdersData = await cached(
-        "upstream:holders",
-        () => fetchUpstream<{ holderCount?: number }>(
-          `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"}/api/token/holders`,
-        ),
-        { ttlSeconds: 60 },
+        "upstream:holders:count",
+        async () => {
+          const data = await getTopHolders(1);
+          return data?.holderCount ?? 0;
+        },
+        { ttlSeconds: 120, staleSeconds: 300 },
       );
-      holderCount = holdersData?.holderCount ?? 0;
+      holderCount = holdersData ?? 0;
     } catch {
       // Non-critical — default to 0
     }
