@@ -25,6 +25,7 @@ interface HealthResponse {
     url: string | null;
     region: string | null;
   };
+  routes: number;
   timestamp: string;
 }
 
