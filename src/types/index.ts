@@ -127,6 +127,9 @@ export interface DashboardSummary {
   total_rewards_escrowed: number;
   token_supply: string;
   holder_count: number;
+  /** Recent activity feed — included so the LiveActivityFeed can poll
+   *  our cached /api/dashboard instead of hitting upstream directly. */
+  activity?: ActivityItem[];
 }
 
 // ---- API Error ----

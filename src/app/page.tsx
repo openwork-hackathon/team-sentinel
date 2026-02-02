@@ -185,7 +185,7 @@ export default async function DashboardPage() {
         <div className="lg:col-span-2">
           <LiveActivityFeed
             initialItems={activity}
-            apiUrl={`${OPENWORK_API}/dashboard`}
+            apiUrl="/api/dashboard"
           />
         </div>
         <div className="space-y-4">
