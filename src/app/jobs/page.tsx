@@ -1,4 +1,14 @@
-import { Briefcase, TrendingUp, Clock, CheckCircle, BarChart3 } from "lucide-react";
+import Link from "next/link";
+import {
+  Briefcase,
+  TrendingUp,
+  Clock,
+  CheckCircle,
+  BarChart3,
+  Coins,
+  ArrowUpRight,
+  FileText,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StatCard } from "@/components/stat-card";
@@ -6,14 +16,16 @@ import { RewardBarChart } from "@/components/charts/reward-bar-chart";
 import { SkillsBarChart } from "@/components/charts/skills-bar-chart";
 import { TrendAreaChart } from "@/components/charts/trend-area-chart";
 import { OPENWORK_API } from "@/lib/constants";
-import { formatNumber } from "@/lib/utils";
+import { formatNumber, cn } from "@/lib/utils";
 
 interface UpstreamJob {
   id: string;
   title?: string;
   status?: string;
   reward?: number;
+  type?: string;
   skills_required?: string[];
+  required_specialties?: string[];
   created_at?: string;
 }
 
@@ -26,6 +38,7 @@ interface JobAnalytics {
   rewardDistribution: { range: string; count: number }[];
   topSkills: { skill: string; count: number }[];
   dailyTrends: { date: string; created: number; completed: number }[];
+  recentJobs: UpstreamJob[];
 }
 
 async function getJobAnalytics(): Promise<JobAnalytics> {
@@ -42,7 +55,7 @@ async function getJobAnalytics(): Promise<JobAnalytics> {
         : [];
 
     const open = jobs.filter(
-      (j) => j.status === "open" || j.status === "available"
+      (j) => j.status === "open" || j.status === "available",
     ).length;
     const completed = jobs.filter((j) => j.status === "completed").length;
 
@@ -80,7 +93,7 @@ async function getJobAnalytics(): Promise<JobAnalytics> {
     // Top skills
     const skillCounts: Record<string, number> = {};
     for (const j of jobs) {
-      for (const s of j.skills_required ?? []) {
+      for (const s of j.skills_required ?? j.required_specialties ?? []) {
         skillCounts[s] = (skillCounts[s] ?? 0) + 1;
       }
     }
@@ -102,7 +115,19 @@ async function getJobAnalytics(): Promise<JobAnalytics> {
     const dailyTrends = Array.from(dailyMap.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .slice(-30)
-      .map(([date, v]) => ({ date, created: v.created, completed: v.completed }));
+      .map(([date, v]) => ({
+        date,
+        created: v.created,
+        completed: v.completed,
+      }));
+
+    // Recent jobs — sorted newest first, non-welcome only, top 30
+    const recentJobs = jobs
+      .filter((j) => !j.title?.startsWith("Welcome "))
+      .sort((a, b) =>
+        (b.created_at ?? "").localeCompare(a.created_at ?? ""),
+      )
+      .slice(0, 30);
 
     return {
       open,
@@ -113,6 +138,7 @@ async function getJobAnalytics(): Promise<JobAnalytics> {
       rewardDistribution,
       topSkills,
       dailyTrends,
+      recentJobs,
     };
   } catch {
     return {
@@ -124,9 +150,40 @@ async function getJobAnalytics(): Promise<JobAnalytics> {
       rewardDistribution: [],
       topSkills: [],
       dailyTrends: [],
+      recentJobs: [],
     };
   }
 }
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+const STATUS_BADGE: Record<string, string> = {
+  open: "bg-blue-500/10 text-blue-400 border-blue-500/30",
+  claimed: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30",
+  submitted: "bg-purple-500/10 text-purple-400 border-purple-500/30",
+  verified: "bg-green-500/10 text-green-400 border-green-500/30",
+  completed: "bg-green-500/10 text-green-400 border-green-500/30",
+  rejected: "bg-red-500/10 text-red-400 border-red-500/30",
+};
+
+function timeAgo(iso: string): string {
+  const seconds = Math.floor(
+    (Date.now() - new Date(iso).getTime()) / 1000,
+  );
+  if (seconds < 60) return "just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
 
 export default async function JobsPage() {
   const stats = await getJobAnalytics();
@@ -143,7 +200,10 @@ export default async function JobsPage() {
             Job market trends, reward analytics, and skill demand
           </p>
         </div>
-        <Badge variant="outline" className="text-sentinel-red border-sentinel-red/30">
+        <Badge
+          variant="outline"
+          className="text-sentinel-red border-sentinel-red/30"
+        >
           <BarChart3 className="w-3 h-3 mr-1" />
           Live Data
         </Badge>
@@ -219,6 +279,92 @@ export default async function JobsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* ───── Recent Jobs Listing ───── */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <FileText className="w-4 h-4 text-muted-foreground" />
+              Recent Jobs
+            </CardTitle>
+            <span className="text-xs text-muted-foreground">
+              Latest 30 (excl. welcome)
+            </span>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {stats.recentJobs.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-8">
+              No jobs found
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {stats.recentJobs.map((job) => (
+                <Link
+                  key={job.id}
+                  href={`/jobs/${job.id}`}
+                  className="group flex items-center gap-3 p-3 rounded-lg border border-border/50 hover:border-sentinel-red/20 hover:bg-muted/30 transition-all"
+                >
+                  {/* Status dot */}
+                  <div
+                    className={cn(
+                      "w-2 h-2 rounded-full flex-shrink-0",
+                      job.status === "open"
+                        ? "bg-blue-400"
+                        : job.status === "verified" ||
+                            job.status === "completed"
+                          ? "bg-green-500"
+                          : "bg-muted-foreground/40",
+                    )}
+                  />
+
+                  {/* Title + meta */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate group-hover:text-sentinel-red transition-colors">
+                      {job.title ?? "Untitled Job"}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      {job.type && (
+                        <span className="text-[10px] text-muted-foreground capitalize">
+                          {job.type}
+                        </span>
+                      )}
+                      {job.created_at && (
+                        <span className="text-[10px] text-muted-foreground">
+                          {timeAgo(job.created_at)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Reward */}
+                  {(job.reward ?? 0) > 0 && (
+                    <span className="flex items-center gap-1 text-xs font-semibold text-sentinel-red flex-shrink-0">
+                      <Coins className="w-3 h-3" />
+                      {formatNumber(job.reward!)}
+                    </span>
+                  )}
+
+                  {/* Status badge */}
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-[10px] px-1.5 py-0 capitalize flex-shrink-0",
+                      STATUS_BADGE[job.status ?? ""] ?? "",
+                    )}
+                  >
+                    {job.status}
+                  </Badge>
+
+                  {/* Arrow */}
+                  <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                </Link>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
