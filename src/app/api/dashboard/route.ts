@@ -103,10 +103,22 @@ export async function GET() {
       totalAgents = agents.length;
     }
 
-    // Jobs
+    // Jobs — prefer upstream dashboard stats (accurate totals),
+    // fall back to counting the jobs list if dashboard stats unavailable.
     let openJobs = 0;
     let completedJobs = 0;
-    if (jobsData) {
+
+    // First, try to extract from upstream dashboard stats (most accurate)
+    if (dashData) {
+      const stats =
+        (dashData as Record<string, unknown>)?.stats ?? dashData;
+      const s = stats as Record<string, number>;
+      openJobs = s?.openJobs ?? s?.open_jobs ?? 0;
+      completedJobs = s?.completedJobs ?? s?.completed_jobs ?? 0;
+    }
+
+    // Fall back to counting from jobs list if dashboard didn't provide stats
+    if (openJobs === 0 && completedJobs === 0 && jobsData) {
       const raw = jobsData;
       const jobs = Array.isArray(raw)
         ? raw
@@ -117,8 +129,10 @@ export async function GET() {
         (j: { status?: string }) =>
           j.status === "open" || j.status === "available",
       ).length;
+      // "verified" is the upstream term for completed jobs
       completedJobs = jobs.filter(
-        (j: { status?: string }) => j.status === "completed",
+        (j: { status?: string }) =>
+          j.status === "completed" || j.status === "verified",
       ).length;
     }
 
@@ -129,14 +143,39 @@ export async function GET() {
         new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
     );
 
+    // ---- Token data from upstream dashboard ----
+    let tokenSupply = "";
+    if (dashData) {
+      const onChain = (dashData as Record<string, Record<string, unknown>>)
+        ?.onChain;
+      if (onChain?.tokenTotalSupply) {
+        tokenSupply = String(onChain.tokenTotalSupply);
+      }
+    }
+
+    // Holder count from our cached token/holders endpoint (if available)
+    let holderCount = 0;
+    try {
+      const holdersData = await cached(
+        "upstream:holders",
+        () => fetchUpstream<{ holderCount?: number }>(
+          `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"}/api/token/holders`,
+        ),
+        { ttlSeconds: 60 },
+      );
+      holderCount = holdersData?.holderCount ?? 0;
+    } catch {
+      // Non-critical — default to 0
+    }
+
     const body: DashboardSummary = {
       total_agents: totalAgents,
       open_jobs: openJobs,
       completed_jobs: completedJobs,
       total_rewards_paid: totalRewardsPaid,
       total_rewards_escrowed: totalRewardsEscrowed,
-      token_supply: "",
-      holder_count: 0,
+      token_supply: tokenSupply,
+      holder_count: holderCount,
       activity,
     };
 
