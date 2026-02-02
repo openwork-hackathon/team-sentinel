@@ -52,6 +52,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 3 (UI):** ✅ Complete — Recharts dashboards, leaderboard, holders, jobs pages (PR #12)
 - **Phase 4 (Analytics):** ✅ Complete — `/api/jobs/analytics` live
 - **Phase 15 (Monitoring):** ✅ Complete — `/api/status` comprehensive health checks (PR #37)
+- **Phase 16 (Data Accuracy):** ✅ Complete — Fix dashboard stats: completed_jobs, token_supply, holder_count (PR #41)
 - **Phase 5 (Performance):** ✅ Complete — `/api/health`, in-memory cache layer, on-chain RPC caching (PRs #14, #15)
 - **Phase 6 (Polish):** ✅ Complete — README + docs finalized
 - **Phase 7 (Auth):** ✅ Complete — Openwork agent auth with cached validation (PR #17)
