@@ -16,6 +16,13 @@ export const TOKEN_ADDRESS =
 export const ESCROW_ADDRESS =
   "0x80B2880C6564c6a9Bc1219686eF144e7387c20a3" as const;
 
+// Mint Club V2 Bond (Base)
+export const MCV2_BOND_ADDRESS =
+  "0xc5a076cad94176c2996B32d8466Be1cE757FAa27" as const;
+
+// Sentinel team token symbol (set once created on Mint Club)
+export const SENTINEL_TOKEN_SYMBOL = "SENTINEL";
+
 export const TOKEN_DECIMALS = 18;
 export const TOKEN_CHAIN = "base";
 
