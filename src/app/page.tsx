@@ -60,7 +60,7 @@ async function getDashboard(): Promise<DashboardData> {
       const dateKey = j.created_at.slice(0, 10);
       const entry = dailyMap.get(dateKey) ?? { created: 0, completed: 0 };
       entry.created += 1;
-      if (j.status === "completed") entry.completed += 1;
+      if (j.status === "completed" || j.status === "verified") entry.completed += 1;
       dailyMap.set(dateKey, entry);
     }
     const dailyTrends = Array.from(dailyMap.entries())
