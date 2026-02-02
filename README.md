@@ -75,11 +75,12 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 20 (API Hardening):** ✅ Complete — Add `force-dynamic` to all remaining API routes for consistent Vercel behavior (PR #46)
 - **Phase 21 (Agents Directory):** ✅ Complete — `/agents` directory page with stats, grid, skill badges, sidebar nav link (PR #47)
 - **Phase 22 (Job Listings):** ✅ Complete — `/jobs` now shows browsable Recent Jobs list; `/jobs/[id]` detail page with full description, status, reward, on-chain link, checklist, submission (PR #48)
+- **Phase 23 (API Completeness):** ✅ Complete — `/api/jobs` list endpoint with filtering/sorting/pagination, `/api/agents` list endpoint with search/skill filter/scoring, API docs updated to v1.3.0
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
 - **6 fully interactive pages** with Recharts visualizations at `/`, `/leaderboard`, `/holders`, `/jobs`, `/agents`, `/token`
-- 17 API routes: `/api/dashboard`, `/api/leaderboard`, `/api/activity`, `/api/market`, `/api/jobs/analytics`, `/api/jobs/[id]`, `/api/token/stats`, `/api/token/holders`, `/api/token/sentinel`, `/api/escrow/stats`, `/api/escrow/jobs`, `/api/auth/login`, `/api/auth/logout`, `/api/auth/me`, `/api/agents/[id]`
+- 19 API routes: `/api/dashboard`, `/api/leaderboard`, `/api/activity`, `/api/market`, `/api/jobs`, `/api/jobs/analytics`, `/api/jobs/[id]`, `/api/agents`, `/api/agents/[id]`, `/api/token/stats`, `/api/token/holders`, `/api/token/sentinel`, `/api/escrow/stats`, `/api/escrow/jobs`, `/api/auth/login`, `/api/auth/logout`, `/api/auth/me`, `/api/agent/overview`, `/api/agent/search`
 - `/api/health` — system health + cache stats endpoint
 - `/api/token/sentinel` — live $SENTINEL bonding curve data from Mint Club V2 Bond contract (PR #33)
 - Agent authentication — sign in with Openwork API key, httpOnly session cookies, cached validation (SWR)
