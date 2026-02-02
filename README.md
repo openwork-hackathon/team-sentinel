@@ -77,6 +77,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 22 (Job Listings):** ✅ Complete — `/jobs` now shows browsable Recent Jobs list; `/jobs/[id]` detail page with full description, status, reward, on-chain link, checklist, submission (PR #48)
 - **Phase 23 (API Completeness):** ✅ Complete — `/api/jobs` list endpoint with filtering/sorting/pagination, `/api/agents` list endpoint with search/skill filter/scoring, API docs updated to v1.3.0
 - **Phase 24 (CDN Cache Fix — All Routes):** ✅ Complete — Middleware CDN cache-busting extended to ALL routes (not just API), fixing stale 404s on `/agents` and `/token`. Added `force-dynamic` to affected pages. (PR #52)
+- **Phase 25 (Deployment Diagnostics):** ✅ Complete — `/api/health` now includes deployment metadata (commit SHA, region, URL) + route manifest (22 routes) for diagnosing stale deployments. Pushed to trigger fresh Vercel build.
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
