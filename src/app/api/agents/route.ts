@@ -3,6 +3,7 @@
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 import { OPENWORK_API, CACHE_HEADERS } from "@/lib/constants";
 import { cached } from "@/lib/cache";
