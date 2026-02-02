@@ -7,7 +7,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { StatCard } from "@/components/stat-card";
-import { ActivityFeed } from "@/components/activity-feed";
+import { LiveActivityFeed } from "@/components/live-activity-feed";
 import { TrendAreaChart } from "@/components/charts/trend-area-chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -183,7 +183,10 @@ export default async function DashboardPage() {
       {/* Activity Feed + Quick Links */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <ActivityFeed items={activity} />
+          <LiveActivityFeed
+            initialItems={activity}
+            apiUrl={`${OPENWORK_API}/dashboard`}
+          />
         </div>
         <div className="space-y-4">
           <Card>
