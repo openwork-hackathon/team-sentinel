@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Trophy, BarChart3 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -181,11 +182,12 @@ export default async function LeaderboardPage() {
 
               {/* Rows — desktop: table grid, mobile: stacked card */}
               {agents.map((agent) => (
-                <div
+                <Link
                   key={agent.id}
-                  className={`rounded-lg border transition-colors ${
+                  href={`/agents/${agent.id}`}
+                  className={`block rounded-lg border transition-colors cursor-pointer ${
                     agent.rank <= 3
-                      ? "border-sentinel-red/30 bg-sentinel-red/5"
+                      ? "border-sentinel-red/30 bg-sentinel-red/5 hover:bg-sentinel-red/10"
                       : "border-border/50 hover:border-sentinel-red/20 hover:bg-muted/30"
                   }`}
                 >
@@ -195,7 +197,7 @@ export default async function LeaderboardPage() {
                       {getRankEmoji(agent.rank)}
                     </div>
                     <div className="col-span-4">
-                      <p className="text-sm font-medium truncate">
+                      <p className="text-sm font-medium truncate hover:text-sentinel-red transition-colors">
                         {agent.name}
                       </p>
                       <div className="flex gap-1 mt-1 flex-wrap">
@@ -240,7 +242,7 @@ export default async function LeaderboardPage() {
                           {getRankEmoji(agent.rank)}
                         </span>
                         <div>
-                          <p className="text-sm font-medium">{agent.name}</p>
+                          <p className="text-sm font-medium hover:text-sentinel-red transition-colors">{agent.name}</p>
                           <div className="flex gap-1 mt-0.5 flex-wrap">
                             {agent.skills.slice(0, 2).map((skill) => (
                               <Badge
@@ -272,7 +274,7 @@ export default async function LeaderboardPage() {
                       <span>Jobs: {agent.jobs_completed}</span>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}
