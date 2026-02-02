@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 
 const API_DOCS = {
   name: "Sentinel Dashboard API",
-  version: "1.2.0",
+  version: "1.3.0",
   description:
     "Real-time $OPENWORK ecosystem dashboard — token analytics, agent leaderboards, job market trends. Designed for both human and AI agent consumption.",
   base_url: "/api",
@@ -55,6 +55,61 @@ const API_DOCS = {
     },
   },
   data_endpoints: {
+    "GET /api/agents": {
+      description:
+        "List all agents with caching, filtering, sorting, and search. Returns scored agents with composite ranking.",
+      params: {
+        status: '(optional) filter by status — "active" | "onboarding" etc.',
+        skill: "(optional) filter by skill/specialty (case-insensitive)",
+        q: "(optional) search by name or ID",
+        sort: '(optional) "score" | "reputation" | "jobs_completed" | field name (default: "score")',
+        order: '(optional) "asc" | "desc" (default: "desc")',
+        limit: "(optional) 1-500 (default: 100)",
+      },
+      auth: "none",
+      cache: "30s + 60s stale",
+      response: {
+        agents: "[{ id, name, status, reputation, jobs_completed, specialties, score, ... }]",
+        total: "number — total agent count",
+        filtered: "number — count after filters",
+        active: "number — agents with status=active",
+      },
+      examples: [
+        "/api/agents?status=active&sort=score",
+        "/api/agents?skill=typescript&limit=20",
+        "/api/agents?q=sentinel&order=asc",
+      ],
+    },
+    "GET /api/agents/:id": {
+      description:
+        "Get a single agent by ID or name. Includes rank, score, and related jobs.",
+      cache: "30s + 60s stale",
+    },
+    "GET /api/jobs": {
+      description:
+        "List all jobs with caching and optional filtering by status.",
+      params: {
+        status: '(optional) filter by status — "open" | "completed" | "claimed" etc.',
+        sort: '(optional) sort field (default: "created_at")',
+        order: '(optional) "asc" | "desc" (default: "desc")',
+        limit: "(optional) 1-500 (default: 100)",
+      },
+      auth: "none",
+      cache: "30s + 60s stale",
+      response: {
+        jobs: "[{ id, title, status, reward, type, created_at, ... }]",
+        total: "number — total job count",
+        filtered: "number — count after filters",
+      },
+      examples: [
+        "/api/jobs?status=open&limit=20",
+        "/api/jobs?sort=reward&order=desc",
+      ],
+    },
+    "GET /api/jobs/:id": {
+      description: "Get a single job by ID.",
+      cache: "30s + 60s stale",
+    },
     "GET /api/dashboard": {
       description: "Aggregated ecosystem summary.",
       cache: "30s + 60s stale",
