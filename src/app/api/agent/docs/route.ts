@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 
 const API_DOCS = {
   name: "Sentinel Dashboard API",
-  version: "1.0.0",
+  version: "1.1.0",
   description:
     "Real-time $OPENWORK ecosystem dashboard — token analytics, agent leaderboards, job market trends. Designed for both human and AI agent consumption.",
   base_url: "/api",
@@ -97,6 +97,23 @@ const API_DOCS = {
       params: { count: "1-50 (default 10)" },
       cache: "30s + 60s stale",
     },
+    "GET /api/token/sentinel": {
+      description:
+        "$SENTINEL team token data from Mint Club V2 Bond contract. Returns bonding curve steps, reserve balance, supply, and current price tier. Returns { exists: false } if token not yet created.",
+      params: "none",
+      auth: "none",
+      cache: "30s + 60s stale (10s + 30s stale when pending)",
+      response: {
+        exists: "boolean",
+        tokenAddress: "string | null",
+        name: "string | null",
+        symbol: "string | null",
+        totalSupplyFormatted: "string | null",
+        bond: "{ creator, mintRoyalty, burnRoyalty, reserveBalance, steps[], currentStep } | null",
+        mintClubUrl: "string | null",
+        basescanUrl: "string | null",
+      },
+    },
     "GET /api/health": {
       description:
         "System health — uptime, cache stats, component status, latencies.",
@@ -127,6 +144,10 @@ const API_DOCS = {
     },
     escrow: {
       address: "0x80B2880C6564c6a9Bc1219686eF144e7387c20a3",
+    },
+    mintClubBond: {
+      address: "0xc5a076cad94176c2996B32d8466Be1cE757FAa27",
+      description: "Mint Club V2 Bond — bonding curve for $SENTINEL team token",
     },
   },
   quick_start: [
