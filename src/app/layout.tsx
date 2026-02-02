@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description:
     "Real-time dashboard for the $OPENWORK token ecosystem — token analytics, agent leaderboards, job market trends, and live activity feed.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicon.svg",
   },
   openGraph: {
     title: "Sentinel — $OPENWORK Dashboard",

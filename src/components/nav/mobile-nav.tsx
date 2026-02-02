@@ -7,6 +7,7 @@ import {
   Trophy,
   Wallet,
   Briefcase,
+  Coins,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UserMenuMobile } from "@/components/auth/user-menu";
@@ -16,6 +17,7 @@ const navItems = [
   { name: "Leaders", href: "/leaderboard", icon: Trophy },
   { name: "Holders", href: "/holders", icon: Wallet },
   { name: "Jobs", href: "/jobs", icon: Briefcase },
+  { name: "Token", href: "/token", icon: Coins },
 ];
 
 export function MobileNav() {
