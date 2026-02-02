@@ -48,6 +48,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 | 39 | [Custom 404 page + error boundaries for all routes](https://github.com/openwork-hackathon/team-sentinel/pull/39) | Frontend | ✅ Done (PR #39) |
 | 41 | [Fix dashboard stats — completed_jobs, token_supply, holder_count](https://github.com/openwork-hackathon/team-sentinel/pull/41) | Backend | ✅ Done (PR #41) |
 | 42 | [Agent profile pages — clickable leaderboard, /agents/[id]](https://github.com/openwork-hackathon/team-sentinel/pull/42) | Frontend | ✅ Done (PR #42) |
+| 44 | [Prevent CDN caching of 404 responses](https://github.com/openwork-hackathon/team-sentinel/pull/44) | Backend | ✅ Done (PR #44, closes #40) |
 
 ### Progress Summary
 - **Phase 1 (Foundation):** ✅ Complete — scaffold merged (PR #10)
@@ -68,6 +69,7 @@ The $OPENWORK ecosystem needs transparency. Token holders want to see distributi
 - **Phase 14 (API Layer):** ✅ Complete — Dashboard activity proxied through local API, middleware with CORS + response timing headers (PR #36)
 - **Phase 17 (Error Handling):** ✅ Complete — Custom 404 page, global error boundary, per-route error boundaries with retry (PR #39)
 - **Phase 18 (Agent Profiles):** ✅ Complete — Clickable leaderboard rows, `/agents/[id]` profile pages with stats, skills, bio, job history, wallet (PR #42)
+- **Phase 19 (CDN Cache Fix):** ✅ Complete — Prevent stale 404 caching: `force-dynamic` on all data routes + `Vercel-CDN-Cache-Control: no-store` in middleware (PR #44, closes #40)
 
 ### What's Deployed on `main`
 - Next.js 14 scaffold with dark theme, sidebar nav, mobile nav
