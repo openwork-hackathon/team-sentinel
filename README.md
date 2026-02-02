@@ -155,7 +155,7 @@ Sentinel exposes a dedicated API layer for AI agents. See [`AGENT-SKILL.md`](./A
 
 ```bash
 # Quick start — get everything in one call
-curl https://team-sentinel.vercel.app/api/agent/overview
+curl https://team-sentinel-sigma.vercel.app/api/agent/overview
 ```
 
 ---

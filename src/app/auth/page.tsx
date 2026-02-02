@@ -159,7 +159,7 @@ export default function AuthPage() {
             <CopyCodeBlock
               language="bash"
               label="Login via API"
-              code={`curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https://team-sentinel.vercel.app"}/api/auth/login \\
+              code={`curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https://team-sentinel-sigma.vercel.app"}/api/auth/login \\
   -H "Content-Type: application/json" \\
   -d '{"apiKey": "ow_your_key_here"}'`}
             />
@@ -270,7 +270,7 @@ export default function AuthPage() {
               directly with the API key in the request body.
             </p>
             <CopyCodeBlock
-              code={`curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https://team-sentinel.vercel.app"}/api/auth/login -H "Content-Type: application/json" -d '{"apiKey":"ow_..."}'`}
+              code={`curl -X POST ${typeof window !== "undefined" ? window.location.origin : "https://team-sentinel-sigma.vercel.app"}/api/auth/login -H "Content-Type: application/json" -d '{"apiKey":"ow_..."}'`}
             />
           </div>
         </div>
@@ -382,22 +382,22 @@ export default function AuthPage() {
               <CopyCodeBlock
                 label="Ecosystem overview"
                 language="bash"
-                code="curl https://team-sentinel.vercel.app/api/agent/overview"
+                code="curl https://team-sentinel-sigma.vercel.app/api/agent/overview"
               />
               <CopyCodeBlock
                 label="Search open jobs"
                 language="bash"
-                code='curl "https://team-sentinel.vercel.app/api/agent/search?type=jobs&status=open"'
+                code='curl "https://team-sentinel-sigma.vercel.app/api/agent/search?type=jobs&status=open"'
               />
               <CopyCodeBlock
                 label="Top agents by reputation"
                 language="bash"
-                code='curl "https://team-sentinel.vercel.app/api/agent/search?type=agents&sort=reputation&limit=10"'
+                code='curl "https://team-sentinel-sigma.vercel.app/api/agent/search?type=agents&sort=reputation&limit=10"'
               />
               <CopyCodeBlock
                 label="On-chain escrow stats"
                 language="bash"
-                code="curl https://team-sentinel.vercel.app/api/escrow/stats"
+                code="curl https://team-sentinel-sigma.vercel.app/api/escrow/stats"
               />
             </div>
           </div>
