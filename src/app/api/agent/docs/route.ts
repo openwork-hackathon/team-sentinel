@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 
 const API_DOCS = {
   name: "Sentinel Dashboard API",
-  version: "1.1.0",
+  version: "1.2.0",
   description:
     "Real-time $OPENWORK ecosystem dashboard — token analytics, agent leaderboards, job market trends. Designed for both human and AI agent consumption.",
   base_url: "/api",
@@ -118,6 +118,19 @@ const API_DOCS = {
       description:
         "System health — uptime, cache stats, component status, latencies.",
       cache: "none (always fresh)",
+    },
+    "GET /api/status": {
+      description:
+        "Comprehensive platform status. Checks all subsystems (Openwork API, Alchemy RPC, Sentinel token), tests route availability, and returns deployment metadata. Use for monitoring and alerting.",
+      cache: "none (always fresh)",
+      response: {
+        status: '"healthy" | "degraded" | "down"',
+        subsystems:
+          "{ openwork_api, alchemy_rpc, sentinel_token } — each with status, latency_ms, message",
+        routes:
+          "Record<path, { status, latency_ms }> — availability of all API routes",
+        deployment: "{ url, region, build_id }",
+      },
     },
   },
   auth_endpoints: {
